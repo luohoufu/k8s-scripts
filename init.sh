@@ -41,8 +41,36 @@ if [ -d /ssl ]; then
     mkdir -p /ssl
 fi
 
-# shell runtime env
-export PATH=$PATH:$basepath/tools
+# execute shell file
+for s in repo tools selinux hostname hosts iface ntpd kernel vim; then
+    bash os/$s.sh
+done 
 
-hostname=`cat $basepath/config.json |jq '.master'`
-hostip=`cat $basepath/config.json |jq '.masterip'`
+# firewall & iptables
+if [ $(ps -ef |grep "firewalld" |grep -v "grep" |wc -l) -gt 0 ]; then
+    echo "setting disable firewalld......"
+    systemctl stop firewalld
+    systemctl disable firewalld
+    echo "......done"
+fi
+if [ $(ps -ef |grep "iptables" |grep -v "grep" |wc -l) -gt 0 ]; then
+    echo "setting disable iptables-services......"
+    systemctl stop iptables
+    systemctl disable iptables
+    echo "......done"
+fi
+
+# setting execute files
+if [[ -d "$basepath/usr/bin"  &&  ! -f /usr/bin/etcd ]] ; then
+    echo "setting execute file......"
+    scp -r $basepath/usr/bin/* /usr/bin
+    echo "......done"
+fi
+
+# rebooting system
+echo "You must reboot system,Do You Want Reboot System Now? [Y]/n"
+read confirm
+if [[ ! "${confirm}" =~ ^[nN]$ ]]; then
+    echo "Rebooting Now......"
+    shutdown -r now
+fi
