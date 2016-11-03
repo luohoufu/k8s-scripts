@@ -22,3 +22,4 @@ ps -ef|grep firewalld
 uname -a
 uname -r
 sestatus -v
+
