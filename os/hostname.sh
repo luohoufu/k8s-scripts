@@ -17,10 +17,12 @@ arr_k8s_node_names=($(echo $k8s_node_names))
 arr_k8s_node_ips=($(echo $k8s_node_ips))
 for ((i=0;i<${#arr_k8s_node_ips[@]};i++));do
     if ip a |grep -q ${arr_k8s_node_ips[$i]}; then
-        if ! grep -wq "${arr_k8s_node_names[$i]}"  /etc/hostname ; then
-            echo "setting hostname,please wait......"
-            hostnamectl set-hostname ${arr_k8s_node_names[$i]}
-            echo "......done"
+        if grep -wq "${arr_k8s_node_names[$i]}"  /etc/hostname ; then
+            exit 0
         fi
+        echo "setting hostname,please wait......"
+        hostnamectl set-hostname ${arr_k8s_node_names[$i]}
+        echo "......done"
+        exit 0
     fi
 done

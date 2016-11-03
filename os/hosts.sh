@@ -16,11 +16,14 @@ k8s_node_ips=`cat $basepath/config.json |jq '.k8s.nodes[].ip'|sed 's/\"//g'`
 arr_k8s_node_names=($(echo $k8s_node_names))
 arr_k8s_node_ips=($(echo $k8s_node_ips))
 
-if ! grep -wq "${arr_k8s_node_names[$i]}"  /etc/hosts ; then
-    echo "setting hosts,please wait......"
-    echo "#add by user" >> /etc/hosts
-    for ((i=0;i<${#arr_k8s_node_ips[@]};i++));do
-        echo "${arr_k8s_node_ips[$i]}    ${arr_k8s_node_names[$i]}" >> /etc/hosts
-    done
-    echo "......done"
+if grep -wq "${arr_k8s_node_names[0]}"  /etc/hosts ; then
+    exit 0
 fi
+
+echo "setting hosts,please wait......"
+echo "#add by user" >> /etc/hosts
+for ((i=0;i<${#arr_k8s_node_ips[@]};i++));do
+    echo "${arr_k8s_node_ips[$i]}    ${arr_k8s_node_names[$i]}" >> /etc/hosts
+done
+echo "......done"
+

@@ -9,7 +9,11 @@ command_exists() {
 }
 
 
-if ! grep -wq "=disabled" /etc/selinux/config ; then
-    sed -i "s/=enforcing/=disabled/g" /etc/selinux/config
-    setenforce 0
+if grep -q "=disabled" /etc/selinux/config ; then
+    exit 0
 fi
+
+echo "setting selinux to disabled,please wait......"
+sed -i "s/=enforcing/=disabled/g" /etc/selinux/config
+setenforce 0
+echo "......done"

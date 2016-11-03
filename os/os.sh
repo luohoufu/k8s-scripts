@@ -48,15 +48,6 @@ echo
 echo "------------------------------------[sestatus -v]------------------------------------"
 echo `sestatus -v`
 echo
-
-# setting core fix
-if ! grep -wq "ip6tables" /etc/sysctl.conf ; then
-    echo "setting ip4 bridge,please wait......"
-    echo "net.bridge.bridge-nf-call-ip6tables = 1" >> /etc/sysctl.conf
-    echo "net.bridge.bridge-nf-call-iptables = 1" >> /etc/sysctl.conf
-    echo "net.bridge.bridge-nf-call-arptables = 1" >> /etc/sysctl.conf
-    echo "......done"
-fi
  
  # remove unuse linux kernel 
 if [[ $(uname -r |cut -c1) -eq 4 && $(rpm -qa | grep kernel|grep -v "4.8"|wc -l) -gt 0 ]]; then

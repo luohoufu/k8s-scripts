@@ -41,8 +41,36 @@ if [ -d /ssl ]; then
     mkdir -p /ssl
 fi
 
+#check config
+export PATH=$PATH:$basepath/tools
+
+k8s_node_names=`cat $basepath/config.json |jq '.k8s.nodes[].name'|sed 's/\"//g'`
+k8s_node_ips=`cat $basepath/config.json |jq '.k8s.nodes[].ip'|sed 's/\"//g'`
+
+arr_k8s_node_names=($(echo $k8s_node_names))
+arr_k8s_node_ips=($(echo $k8s_node_ips))
+
+master_flag=0
+ip_falg=0
+for ((i=0;i<${#arr_k8s_node_ips[@]};i++));do
+    if echo ${arr_k8s_node_names[$i]}|grep -q "master"; then
+        master_flag=$(($master_flaga+1))
+    fi
+    if ip a |grep -q ${arr_k8s_node_ips[$i]}; then
+        ip_falg=$(($ip_falg+1))
+    fi
+done
+if [ $master_flag -ne 1 ]; then
+    echo "ERROR: You must set only one node name with content master,Please modify $basepath/config.json!"
+    exit 1
+fi
+if [ $ip_falg -ne 1 ]; then
+    echo "ERROR: You ip not in cluster,,Please modify $basepath/config.json"
+    exit 1
+fi
+
 # execute shell file
-for s in repo tools selinux hostname hosts iface ntpd kernel vim; do
+for s in repo tools selinux hostname hosts iface ntpd kernel vim fix; do
     bash $basepath/os/$s.sh
 done 
 
