@@ -18,8 +18,8 @@ if [ -f /etc/ntp.conf ]; then
         sed -i "s/3.centos.pool.ntp.org/time4.aliyun.com/" /etc/ntp.conf
         timedatectl set-timezone Asia/Shanghai
         if command_exists ntpd; then
-            systemctl start ntpd
-            systemctl enable ntpd
+            systemctl start ntpd  > /dev/null 2>&1
+            systemctl enable ntpd  > /dev/null 2>&1
             ntpq -p > /dev/null 2>&1
         fi
         echo "......done"

@@ -10,7 +10,7 @@ command_exists() {
 
 for cmd in vim git wget strace telnet traceroute iptables expect; do
     if ! command_exists ${cmd}; then
-        yum -y install $cmd
+        yum -y install $cmd > /dev/null 2>&1
     fi
 done
 

@@ -42,8 +42,8 @@ if [ -d /ssl ]; then
 fi
 
 # execute shell file
-for s in repo tools selinux hostname hosts iface ntpd kernel vim; then
-    bash os/$s.sh
+for s in repo tools selinux hostname hosts iface ntpd kernel vim; do
+    bash $basepath/os/$s.sh
 done 
 
 # firewall & iptables
