@@ -8,8 +8,8 @@ command_exists() {
      command -v "$@" > /dev/null 2>&1
 }
 
-grep -q "=enforcing" /etc/selinux/config
-if [ $? -eq 0 ]; then
+
+if ! grep -wq "=disabled" /etc/selinux/config ; then
     sed -i "s/=enforcing/=disabled/g" /etc/selinux/config
     setenforce 0
 fi
