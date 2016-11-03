@@ -33,6 +33,7 @@
                 "ip": "10.37.116.30"
             }
         ],
-        "passwd": "hello@1234"
+        "passwd": "hello@1234",
+        "domain": "cluster.dev"
     }
 }

@@ -18,12 +18,9 @@ arr_k8s_node_ips=($(echo $k8s_node_ips))
 
 if ! grep -wq "${arr_k8s_node_names[$i]}"  /etc/hosts ; then
     echo "setting hosts,please wait......"
+    echo "#add by user" >> /etc/hosts
     for ((i=0;i<${#arr_k8s_node_ips[@]};i++));do
-        if ip a |grep -q ${arr_k8s_node_ips[$i]}; then
-
-            echo "${arr_k8s_node_ips[$i]}    ${arr_k8s_node_names[$i]}" >> /etc/hosts
-
-        fi
+        echo "${arr_k8s_node_ips[$i]}    ${arr_k8s_node_names[$i]}" >> /etc/hosts
     done
     echo "......done"
 fi
