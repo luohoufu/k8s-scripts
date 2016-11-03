@@ -21,7 +21,7 @@ if ! ip a |grep -q "eth0" ; then
     for ((i=0;i<${#arr_k8s_node_ips[@]};i++));do
         if ip a |grep -q ${arr_k8s_node_ips[$i]}; then
             iface=`ip a |grep ${arr_k8s_node_ips[$i]}|awk '{print $NF}'`
-            mac=`nmcli device show $IFACE| grep 'HWADDR'|awk '{print $2}'`
+            mac=`nmcli device show $iface| grep 'HWADDR'|awk '{print $2}'`
             face=/etc/sysconfig/network-scripts/ifcfg-eth0
             rule=/etc/udev/rules.d/70-persistent-net.rules
             if [ -f /etc/sysconfig/network-scripts/ifcfg-$iface ]; then
