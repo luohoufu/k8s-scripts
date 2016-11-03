@@ -1,0 +1,38 @@
+{
+    "etcd": {
+        "nodes": [
+            {
+                "name": "etcd1",
+                "ip": "10.37.116.27"
+            },
+            {
+                "name": "etcd2",
+                "ip": "10.37.116.30"
+            }
+        ]
+    },
+    "flannel": {
+        "key": "/flannel/network/config",
+        "value": {
+            "Network": "172.16.0.0/16",
+            "SubnetLen": 25,
+            "Backend": {
+                "Type": "vxlan",
+                "VNI": 1
+            }
+        }
+    },
+    "k8s": {
+        "nodes": [
+            {
+                "name": "k8s-master",
+                "ip": "10.37.116.27"
+            },
+            {
+                "name": "k8s-node-1",
+                "ip": "10.37.116.30"
+            }
+        ],
+        "passwd": "hello@1234"
+    }
+}

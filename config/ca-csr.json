@@ -1,0 +1,16 @@
+{
+  "CN": "K8S",
+  "key": {
+    "algo": "rsa",
+    "size": 2048
+  },
+  "names": [
+    {
+      "C": "CN",
+      "L": "Changsha",
+      "O": "K8s, Inc.",
+      "OU": "Min Tech",
+      "ST": "Hunan"
+    }
+  ]
+}
