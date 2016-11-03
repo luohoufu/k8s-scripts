@@ -35,3 +35,4 @@ go get -u github.com/cloudflare/cfssl/cmd/...
 * json操作  
 **jq**
 https://github.com/stedolan/jq/releases
+http://stedolan.github.io/jq/download/linux64/jq
