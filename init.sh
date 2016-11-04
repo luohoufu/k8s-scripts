@@ -43,8 +43,8 @@ fi
 #check config
 export PATH=$PATH:$basepath/tools
 
-k8s_node_names=`cat $basepath/config/config.json |jq '.k8s.nodes[].name'|sed 's/\"//g'`
-k8s_node_ips=`cat $basepath/config/config.json |jq '.k8s.nodes[].ip'|sed 's/\"//g'`
+k8s_node_names=`cat $basepath/config/k8s.json |jq '.k8s.nodes[].name'|sed 's/\"//g'`
+k8s_node_ips=`cat $basepath/config/k8s.json |jq '.k8s.nodes[].ip'|sed 's/\"//g'`
 
 arr_k8s_node_names=($(echo $k8s_node_names))
 arr_k8s_node_ips=($(echo $k8s_node_ips))
@@ -60,11 +60,11 @@ for ((i=0;i<${#arr_k8s_node_ips[@]};i++));do
     fi
 done
 if [ $master_flag -ne 1 ]; then
-    echo "ERROR: You must set only one node name with content master,Please modify $basepath/config/config.json!"
+    echo "ERROR: You must set only one node name with content master,Please modify $basepath/config/k8s.json!"
     exit 1
 fi
 if [ $ip_falg -ne 1 ]; then
-    echo "ERROR: You ip not in cluster,,Please modify $basepath/config/config.json!"
+    echo "ERROR: You ip not in cluster,,Please modify $basepath/config/k8s.json!"
     exit 1
 fi
 

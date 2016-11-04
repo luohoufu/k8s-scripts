@@ -7,7 +7,7 @@
   - [Linux x86_64](https://www.virtualbox.org/wiki/Linux_Downloads) 
 * 采用3台虚拟机，1台master,2台node
 * 采用脚本（配置和systemd服务生成）+可执行文件方式搭建k8s环境
-* 机器信息通过config/config.json进行配置
+* 机器信息通过config/*.json进行配置
 
 ## 网络环境
 * 采用桥接网卡，虚拟机与HOSTS在同一局域网，并能相互访问，关于虚拟机网络设置如下：  

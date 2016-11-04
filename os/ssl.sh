@@ -21,22 +21,22 @@ if [ ! -f /ssl/ca.pem ]; then
 fi
 
 if [ ! -f /ssl/etcd.pem ]; then
-    cfssl gencert -ca /ssl/ca.pem -ca-key certs/ca-key.pem -config $basepath/config/ca-config.json $basepath/config/req-csr.json | cfssljson -bare /ssl/etcd
+    cfssl gencert -ca /ssl/ca.pem -ca-key certs/ca-key.pem -config $basepath/config/ca-k8s.json $basepath/config/req-csr.json | cfssljson -bare /ssl/etcd
 fi
 
 if [ ! -f /ssl/flanneld.pem ]; then
-    cfssl gencert -ca /ssl/ca.pem -ca-key certs/ca-key.pem -config $basepath/config/ca-config.json $basepath/config/req-csr.json | cfssljson -bare /ssl/flanneld
+    cfssl gencert -ca /ssl/ca.pem -ca-key certs/ca-key.pem -config $basepath/config/ca-k8s.json $basepath/config/req-csr.json | cfssljson -bare /ssl/flanneld
 fi
 
 if [ ! -f /ssl/apiserver.pem ]; then
-    cfssl gencert -ca /ssl/ca.pem -ca-key certs/ca-key.pem -config $basepath/config/ca-config.json $basepath/config/req-csr.json | cfssljson -bare /ssl/apiserver
+    cfssl gencert -ca /ssl/ca.pem -ca-key certs/ca-key.pem -config $basepath/config/ca-k8s.json $basepath/config/req-csr.json | cfssljson -bare /ssl/apiserver
 fi
 
-k8s_node_username=`cat $basepath/config/config.json |jq '.k8s.username'|sed 's/\"//g'`
-k8s_node_passwd=`cat $basepath/config/config.json |jq '.k8s.passwd'|sed 's/\"//g'`
+k8s_node_username=`cat $basepath/config/k8s.json |jq '.k8s.username'|sed 's/\"//g'`
+k8s_node_passwd=`cat $basepath/config/k8s.json |jq '.k8s.passwd'|sed 's/\"//g'`
 
-k8s_node_names=`cat $basepath/config/config.json |jq '.k8s.nodes[].name'|sed 's/\"//g'`
-k8s_node_ips=`cat $basepath/config/config.json |jq '.k8s.nodes[].ip'|sed 's/\"//g'`
+k8s_node_names=`cat $basepath/config/k8s.json |jq '.k8s.nodes[].name'|sed 's/\"//g'`
+k8s_node_ips=`cat $basepath/config/k8s.json |jq '.k8s.nodes[].ip'|sed 's/\"//g'`
 
 arr_k8s_node_names=($(echo $k8s_node_names))
 arr_k8s_node_ips=($(echo $k8s_node_ips))
