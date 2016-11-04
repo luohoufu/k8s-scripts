@@ -52,8 +52,8 @@ fi
 # check workdir
 if [ ! -d "$data" ]; then
     mkdir -p $data
-    for f in $data $exefile $cert $certkey $conf
-        chown -R $user:$user $f
+    for p in $data $exefile $cert $certkey ${conf%/*}; do
+        chown -R $user:$user $p
     done
 fi
 
@@ -102,7 +102,7 @@ Description=Etcd Server
 After=network.target
 
 [Service]
-Type=simple
+Type=notify
 User=etcd
 WorkingDirectory=${data}
 EnvironmentFile=-${conf}
@@ -125,5 +125,5 @@ fi
 
 #setting alias
 if ! grep -q "etcdctl" /root/.bashrc ; then
-    sed -i "/alias vi/a\alias  etcdctl='etcdctl --ca-file=/ssl/ca.pem --cert-file=/ssl/etcd.pem --key-file=/ssl/etcd-key.pem --endpoints=$etcd_endpoints'" /root/.bashrc
+    sed -i "/alias vi/a\alias etcdctl='etcdctl --ca-file=/ssl/ca.pem --cert-file=/ssl/etcd.pem --key-file=/ssl/etcd-key.pem --endpoints=$etcd_endpoints'" /root/.bashrc
 fi
