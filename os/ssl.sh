@@ -21,12 +21,12 @@ export PATH=$PATH:$basepath/tools
 
 #ssl with all nodes
 if [ ! -f /ssl/ca.pem ]; then
-    cfssl gencert -initca "$basepath/config/ca-csr.json" | cfssljson -bare /ssl/ca > /dev/null 2>&1
+    cfssl gencert -loglevel 4 -initca "$basepath/config/ca-csr.json" | cfssljson -bare /ssl/ca
 fi
 
 for f in etcd flanneld apiserver; do
     if [ ! -f /ssl/$f.pem ]; then
-        cfssl gencert -ca /ssl/ca.pem -ca-key /ssl/ca-key.pem -config "$basepath/config/ca-config.json" "$basepath/config/req-csr.json" | cfssljson -bare /ssl/$f > /dev/null 2>&1
+        cfssl gencert -loglevel 4 -ca /ssl/ca.pem -ca-key /ssl/ca-key.pem -config "$basepath/config/ca-config.json" "$basepath/config/req-csr.json" | cfssljson -bare /ssl/$f
     fi
 done
 
@@ -40,7 +40,7 @@ for ((i=0;i<${#arr_k8s_node_names[@]};i++));do
     if echo $k8s_node_hostname|grep -q "master"; then
         continue
     fi
-    scp -r /ssl $k8s_node_username@$k8s_node_hostname:/
+    scp -r /ssl $k8s_node_username@$k8s_node_hostname:/ > /dev/null 2>&1
     touch /ssl/synced
 done
 
