@@ -25,15 +25,15 @@ if [ ! -f /ssl/ca.pem ]; then
 fi
 
 if [ ! -f /ssl/etcd.pem ]; then
-    cfssl gencert -ca /ssl/ca.pem -ca-key certs/ca-key.pem -config $basepath/config/ca-k8s.json $basepath/config/req-csr.json | cfssljson -bare /ssl/etcd
+    cfssl gencert -ca /ssl/ca.pem -ca-key certs/ca-key.pem -config "$basepath/config/ca-k8s.json" $basepath/config/req-csr.json | cfssljson -bare /ssl/etcd
 fi
 
 if [ ! -f /ssl/flanneld.pem ]; then
-    cfssl gencert -ca /ssl/ca.pem -ca-key certs/ca-key.pem -config $basepath/config/ca-k8s.json $basepath/config/req-csr.json | cfssljson -bare /ssl/flanneld
+    cfssl gencert -ca /ssl/ca.pem -ca-key certs/ca-key.pem -config "$basepath/config/ca-k8s.json" "$basepath/config/req-csr.json" | cfssljson -bare /ssl/flanneld
 fi
 
 if [ ! -f /ssl/apiserver.pem ]; then
-    cfssl gencert -ca /ssl/ca.pem -ca-key certs/ca-key.pem -config $basepath/config/ca-k8s.json $basepath/config/req-csr.json | cfssljson -bare /ssl/apiserver
+    cfssl gencert -ca /ssl/ca.pem -ca-key certs/ca-key.pem -config "$basepath/config/ca-k8s.json" $basepath/config/req-csr.json | cfssljson -bare /ssl/apiserver
 fi
 
 k8s_node_username=`cat $basepath/config/k8s.json |jq '.k8s.username'|sed 's/\"//g'`
