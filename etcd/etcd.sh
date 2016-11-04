@@ -20,8 +20,8 @@ for ((i=0;i<${#arr_etcd_node_ips[@]};i++));do
         etcd_ip=${arr_etcd_node_ips[$i]}
     fi
 done
-etcd_endpoints=`echo $etcd_node_names $etcd_node_ips|awk  '{for (i = 1; i < NF/2; i++) printf("%s=https://%s:2380,",$i,$(i+NF/2));printf("%s=https://%s:2380",$i,$(i+NF/2))}'`
-
+etcd_cluster=`echo $etcd_node_names $etcd_node_ips|awk '{for (i = 1; i < NF/2; i++) printf("%s=https://%s:2380,",$i,$(i+NF/2));printf("%s=https://%s:2380",$i,$(i+NF/2))}'`
+etcd_endpoints=`echo $etcd_node_names $etcd_node_ips|awk '{for (i = 1; i < NF-1; i++) printf("https://%s:2379,",$i);printf("https://%s:2379",$i)}'`
 # Create etcd.conf, etcd.service
 user=etcd
 data=/var/lib/etcd
@@ -75,7 +75,7 @@ ETCD_LISTEN_CLIENT_URLS="https://${etcd_ip}:2379,https://127.0.0.1:2379"
 ETCD_INITIAL_ADVERTISE_PEER_URLS="https://${etcd_ip}:2380"
 # if you use different ETCD_NAME (e.g. test), 
 # set ETCD_INITIAL_CLUSTER value for this name, i.e. "test=http://..."
-ETCD_INITIAL_CLUSTER="${etcd_endpoints}"
+ETCD_INITIAL_CLUSTER="${etcd_cluster}"
 ETCD_INITIAL_CLUSTER_STATE="new"
 ETCD_INITIAL_CLUSTER_TOKEN="k8s-etcd-cluster"
 ETCD_ADVERTISE_CLIENT_URLS="https://${etcd_ip}:2379"
