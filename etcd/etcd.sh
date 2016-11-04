@@ -114,7 +114,7 @@ WantedBy=multi-user.target
 EOF
 
 systemctl daemon-reload
-systemctl start etcd
+systemctl enable etcd
 
 etcd --version > /dev/null 2>&1
 if [[ $? -eq 0 ]];then
