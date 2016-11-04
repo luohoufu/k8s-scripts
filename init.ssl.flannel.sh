@@ -17,7 +17,7 @@ if [[ ! `id -u` -eq 0 ]]; then
 bash $basepath/os/check.sh
 
 # excute ectd shell
-bash $basepath/etcd/etcd.sh
+bash $basepath/flannel/flannel.sh
 
 # rebooting system
 echo "You must reboot system,Do You Want Reboot System Now? [Y]/n"

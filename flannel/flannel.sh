@@ -64,8 +64,8 @@ if [ ! -d "$data" ]; then
 fi
 
 # check etcd flannel config
-if [ $(etcdctl ls "$flannel_key"|grep "network"|wc -l) -eq 0 ]; then
-     etcdctl set $flannel_key $flannel_value
+if [ $(etcdctl --ca-file=$ca --cert-file=$cert --key-file=$certkey --endpoints=$etcd_endpoints ls "$flannel_key"|grep "network"|wc -l) -eq 0 ]; then
+     etcdctl --ca-file=$ca --cert-file=$cert --key-file=$certkey --endpoints=$etcd_endpoints set $flannel_key $flannel_value
 fi
 
 # config file

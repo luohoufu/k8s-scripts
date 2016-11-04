@@ -129,5 +129,5 @@ fi
 
 #setting alias
 if ! grep -q "etcdctl" /root/.bashrc ; then
-    sed -i "/alias vi/a\alias etcdctl='etcdctl --ca-file=/ssl/ca.pem --cert-file=/ssl/etcd.pem --key-file=/ssl/etcd-key.pem --endpoints=$etcd_endpoints'" /root/.bashrc
+    sed -i "/alias vi/a\alias etcdctl='etcdctl --ca-file=$ca --cert-file=$cert --key-file=$certkey --endpoints=$etcd_endpoints'" /root/.bashrc
 fi
