@@ -1,4 +1,4 @@
- #!/usr/bin/env bash
+  #!/usr/bin/env bash
  # -*- bash -*-
 
 set -e -o pipefail -o errtrace -o functrace
@@ -11,62 +11,10 @@ command_exists() {
 if [[ ! `id -u` -eq 0 ]]; then
      echo "Please run this shell by root user!"
      exit 1;
- fi
-# add execute permission
- for f in $basepath/tools/*;do
-    if test -f $f; then
-        chmod +x $f
-    fi
- done
-# add execute permission for shell
-find . -name '*.sh' -exec chmod +x {} \;
-# dowload tool
-if ! command_exists wget; then
-    yum -y install wget > /dev/null 2>&1
 fi
-# net tool
-if ! command_exists ifconfig; then
-    yum -y install net-tools > /dev/null 2>&1
-fi
-# ntp tool
-if ! command_exists ntpd; then
-    yum -y install ntp > /dev/null 2>&1
-fi
-# ssh folder
-if [ ! -d /root/.ssh ]; then
-    mkdir -p /root/.ssh
-fi
-# ssl folder
-if [ ! -d /ssl ]; then
-    mkdir -p /ssl
-fi
-#check config
-export PATH=$PATH:$basepath/tools
 
-k8s_node_names=`cat $basepath/config/k8s.json |jq '.k8s.nodes[].name'|sed 's/\"//g'`
-k8s_node_ips=`cat $basepath/config/k8s.json |jq '.k8s.nodes[].ip'|sed 's/\"//g'`
-
-arr_k8s_node_names=($(echo $k8s_node_names))
-arr_k8s_node_ips=($(echo $k8s_node_ips))
-
-master_flag=0
-ip_falg=0
-for ((i=0;i<${#arr_k8s_node_ips[@]};i++));do
-    if echo ${arr_k8s_node_names[$i]}|grep -q "master"; then
-        master_flag=$(($master_flag+1))
-    fi
-    if ip a |grep -q ${arr_k8s_node_ips[$i]}; then
-        ip_falg=$(($ip_falg+1))
-    fi
-done
-if [ $master_flag -ne 1 ]; then
-    echo "ERROR: You must set only one node name with content master,Please modify $basepath/config/k8s.json!"
-    exit 1
-fi
-if [ $ip_falg -ne 1 ]; then
-    echo "ERROR: You ip not in cluster,,Please modify $basepath/config/k8s.json!"
-    exit 1
-fi
+# check config
+bash $basepath/os/check.sh
 
 # execute shell file
 for s in repo tools selinux hostname hosts iface ntpd kernel vim fix; do
