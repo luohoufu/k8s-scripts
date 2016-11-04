@@ -33,14 +33,13 @@ if ! command_exists ntpd; then
     yum -y install ntp > /dev/null 2>&1
 fi
 # ssh folder
-if [ -d /root/.ssh ]; then
+if [ ! -d /root/.ssh ]; then
     mkdir -p /root/.ssh
 fi
 # ssl folder
-if [ -d /ssl ]; then
+if [ ! -d /ssl ]; then
     mkdir -p /ssl
 fi
-
 #check config
 export PATH=$PATH:$basepath/tools
 
@@ -54,7 +53,7 @@ master_flag=0
 ip_falg=0
 for ((i=0;i<${#arr_k8s_node_ips[@]};i++));do
     if echo ${arr_k8s_node_names[$i]}|grep -q "master"; then
-        master_flag=$(($master_flaga+1))
+        master_flag=$(($master_flag+1))
     fi
     if ip a |grep -q ${arr_k8s_node_ips[$i]}; then
         ip_falg=$(($ip_falg+1))
@@ -65,7 +64,7 @@ if [ $master_flag -ne 1 ]; then
     exit 1
 fi
 if [ $ip_falg -ne 1 ]; then
-    echo "ERROR: You ip not in cluster,,Please modify $basepath/config.json"
+    echo "ERROR: You ip not in cluster,,Please modify $basepath/config.json!"
     exit 1
 fi
 
