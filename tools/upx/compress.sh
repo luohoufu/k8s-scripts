@@ -25,8 +25,7 @@ export PATH=$PATH:$basepath/upx
 echo "Do You Want Compress Now? [Y]/n"
 read confirm
 if [[ ! "${confirm}" =~ ^[nN]$ ]]; then
-    upx -9 -k $basepath/cfssl
-    upx -9 -k $basepath/cfssljson
-    upx -9 -k $basepath/jq
-    rm -rf $basepath/*.~
+    upx -9 -qqq $basepath/cfssl
+    #upx -9 -qqq $basepath/cfssljson
+    upx -9 -qqq $basepath/jq
 fi

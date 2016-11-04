@@ -21,24 +21,16 @@ export PATH=$PATH:$basepath/tools
 
 #ssl with all nodes
 if [ ! -f /ssl/ca.pem ]; then
-    cfssl gencert -initca "$basepath/config/ca-csr.json" | cfssljson -bare /ssl/ca
+    cfssl gencert -initca "$basepath/config/ca-csr.json" | cfssljson -bare /ssl/ca > /dev/null 2>&1
 fi
 
-if [ ! -f /ssl/etcd.pem ]; then
-    cfssl gencert -ca /ssl/ca.pem -ca-key certs/ca-key.pem -config "$basepath/config/ca-k8s.json" "$basepath/config/req-csr.json" | cfssljson -bare /ssl/etcd
-fi
-
-if [ ! -f /ssl/flanneld.pem ]; then
-    cfssl gencert -ca /ssl/ca.pem -ca-key certs/ca-key.pem -config "$basepath/config/ca-k8s.json" "$basepath/config/req-csr.json" | cfssljson -bare /ssl/flanneld
-fi
-
-if [ ! -f /ssl/apiserver.pem ]; then
-    cfssl gencert -ca /ssl/ca.pem -ca-key certs/ca-key.pem -config "$basepath/config/ca-k8s.json" "$basepath/config/req-csr.json" | cfssljson -bare /ssl/apiserver
-fi
+for f in etcd flanneld apiserver; do
+    if [ ! -f /ssl/$f.pem ]; then
+        cfssl gencert -ca /ssl/ca.pem -ca-key /ssl/ca-key.pem -config "$basepath/config/ca-config.json" "$basepath/config/req-csr.json" | cfssljson -bare /ssl/$f > /dev/null 2>&1
+    fi
+done
 
 k8s_node_username=`cat $basepath/config/k8s.json |jq '.k8s.username'|sed 's/\"//g'`
-k8s_node_passwd=`cat $basepath/config/k8s.json |jq '.k8s.passwd'|sed 's/\"//g'`
-
 k8s_node_names=`cat $basepath/config/k8s.json |jq '.k8s.nodes[].name'|sed 's/\"//g'`
 
 arr_k8s_node_names=($(echo $k8s_node_names))
@@ -48,7 +40,7 @@ for ((i=0;i<${#arr_k8s_node_names[@]};i++));do
     if echo $k8s_node_hostname|grep -q "master"; then
         continue
     fi
-    expect $basepath/os/expect/expect_scp.sh $k8s_node_hostname $k8s_node_username $k8s_node_passwd > /dev/null 2>&1
+    scp -r /ssl $k8s_node_username@$k8s_node_hostname:/
     touch /ssl/synced
 done
 
