@@ -9,6 +9,7 @@ command_exists() {
 }
 
 export PATH=$PATH:$basepath/tools
+
 etcd_node_names=`cat $basepath/config/k8s.json |jq '.etcd.nodes[].name'|sed 's/\"//g'`
 etcd_node_ips=`cat $basepath/config/k8s.json |jq '.etcd.nodes[].ip'|sed 's/\"//g'`
 
@@ -20,6 +21,7 @@ for ((i=0;i<${#arr_etcd_node_ips[@]};i++));do
         etcd_ip=${arr_etcd_node_ips[$i]}
     fi
 done
+
 etcd_cluster=`echo $etcd_node_names $etcd_node_ips|awk '{for (i = 1; i < NF/2; i++) printf("%s=https://%s:2380,",$i,$(i+NF/2));printf("%s=https://%s:2380",$i,$(i+NF/2))}'`
 etcd_endpoints=`echo $etcd_node_ips|awk '{for (i = 1; i < NF; i++) printf("https://%s:2379,",$i);printf("https://%s:2379",$NF)}'`
 
@@ -27,6 +29,7 @@ etcd_endpoints=`echo $etcd_node_ips|awk '{for (i = 1; i < NF; i++) printf("https
 user=etcd
 data=/var/lib/etcd
 exefile=/usr/bin/etcd
+ca=/ssl/ca.pem
 cert=/ssl/etcd.pem
 certkey=/ssl/etcd-key.pem
 conf=/etc/etcd/etcd.conf
@@ -89,12 +92,12 @@ ETCD_ADVERTISE_CLIENT_URLS="https://${etcd_ip}:2379"
 #ETCD_PROXY="off"
 #
 #[security]
-ETCD_CA_FILE="/ssl/ca.pem"
-ETCD_CERT_FILE="/ssl/etcd.pem"
-ETCD_KEY_FILE="/ssl/etcd-key.pem"
-ETCD_PEER_CA_FILE="/ssl/ca.pem"
-ETCD_PEER_CERT_FILE="/ssl/etcd.pem"
-ETCD_PEER_KEY_FILE="/ssl/etcd-key.pem"
+ETCD_CA_FILE="${ca}"
+ETCD_CERT_FILE="${cert}"
+ETCD_KEY_FILE="${certkey}"
+ETCD_PEER_CA_FILE="${ca}"
+ETCD_PEER_CERT_FILE="${cert}"
+ETCD_PEER_KEY_FILE="${certkey}"
 EOF
 
 cat <<EOF >$service
@@ -104,7 +107,7 @@ After=network.target
 
 [Service]
 Type=notify
-User=etcd
+User=${user}
 WorkingDirectory=${data}
 EnvironmentFile=-${conf}
 # set GOMAXPROCS to number of processors
