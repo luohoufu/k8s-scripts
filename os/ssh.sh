@@ -31,8 +31,8 @@ for ((i=0;i<${#arr_k8s_node_ips[@]};i++));do
     if echo ${arr_k8s_node_names[$i]}|grep -q "master"; then
         continue
     fi
-    expect $basepath/os/expect/expect_ssh_node.sh $k8s_node_username ${arr_k8s_node_names[$i]} $k8s_node_passwd > /dev/null 2>&1
-    expect $basepath/os/expect/expect_ssh_ip.sh $k8s_node_username ${arr_k8s_node_ips[$i]} $k8s_node_passwd > /dev/null 2>&1
+    expect $basepath/os/expect/expect_ssh.sh ${arr_k8s_node_names[$i]} $k8s_node_username $k8s_node_passwd > /dev/null 2>&1
+    expect $basepath/os/expect/expect_ssh.sh ${arr_k8s_node_ips[$i]} $k8s_node_username $k8s_node_passwd > /dev/null 2>&1
 done
 
 echo "......done"
