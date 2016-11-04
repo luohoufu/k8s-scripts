@@ -10,8 +10,8 @@ command_exists() {
 
 export PATH=$PATH:$basepath/tools
 
-k8s_node_names=`cat $basepath/config.json |jq '.k8s.nodes[].name'|sed 's/\"//g'`
-k8s_node_ips=`cat $basepath/config.json |jq '.k8s.nodes[].ip'|sed 's/\"//g'`
+k8s_node_names=`cat $basepath/config/config.json |jq '.k8s.nodes[].name'|sed 's/\"//g'`
+k8s_node_ips=`cat $basepath/config/config.json |jq '.k8s.nodes[].ip'|sed 's/\"//g'`
 
 arr_k8s_node_names=($(echo $k8s_node_names))
 arr_k8s_node_ips=($(echo $k8s_node_ips))
