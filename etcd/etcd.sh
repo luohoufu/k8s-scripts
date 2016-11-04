@@ -12,12 +12,11 @@ export PATH=$PATH:$basepath/tools
 etcd_node_names=`cat $basepath/config/k8s.json |jq '.etcd.nodes[].name'|sed 's/\"//g'`
 etcd_node_ips=`cat $basepath/config/k8s.json |jq '.etcd.nodes[].ip'|sed 's/\"//g'`
 
- 
-arr_etcd_node_names=($(echo $k8s_node_names))
-arr_etcd_node_ips=($(echo $k8s_node_ips))
-for ((i=0;i<${#arr_k8s_node_ips[@]};i++));do
-    if ip a |grep -q ${arr_k8s_node_ips[$i]}; then
-        hostnamectl set-hostname ${arr_k8s_node_names[$i]}
+arr_etcd_node_names=($(echo $etcd_node_names))
+arr_etcd_node_ips=($(echo $etcd_node_ips))
+for ((i=0;i<${#arr_etcd_node_ips[@]};i++));do
+    if ip a |grep -q ${arr_etcd_node_ips[$i]}; then
+        etcd_name=${arr_etcd_node_names[$i]}
     fi
 done
 etcd_endpoints=`echo $etcd_node_names $etcd_node_ips|awk  '{for (i = 1; i < NF/2; i++) printf("%s=https://%s:2380,",$i,$(i+NF/2));printf("%s=https://%s:2380",$i,$(i+NF/2))}'`

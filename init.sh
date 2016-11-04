@@ -21,20 +21,6 @@ for s in repo tools selinux hostname hosts iface ntpd kernel vim fix; do
     bash $basepath/os/$s.sh
 done 
 
-# firewall & iptables
-if [ $(ps -ef |grep "firewalld" |grep -v "grep" |wc -l) -gt 0 ]; then
-    echo "setting disable firewalld......"
-    systemctl stop firewalld
-    systemctl disable firewalld
-    echo "......done"
-fi
-if [ $(ps -ef |grep "iptables" |grep -v "grep" |wc -l) -gt 0 ]; then
-    echo "setting disable iptables-services......"
-    systemctl stop iptables
-    systemctl disable iptables
-    echo "......done"
-fi
-
 # setting execute files
 if [[ -d "$basepath/usr/bin"  &&  ! -f /usr/bin/etcd ]] ; then
     echo "setting execute file......"
