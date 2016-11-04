@@ -15,7 +15,12 @@ if [[ ! `id -u` -eq 0 ]]; then
 
 export PATH=$PATH:$basepath/upx
 
+#
 # go build -ldflags "-s -w" 
+# go get -u github.com/cloudflare/cfssl/cmd/...
+# git clone https://github.com/upx/upx.git
+# git clone https://github.com/stedolan/jq.git
+# 
 # compress file with upx
 echo "Do You Want Compress Now? [Y]/n"
 read confirm

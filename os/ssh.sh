@@ -9,8 +9,8 @@ command_exists() {
 }
 
 echo "gernerate ssh files and copy to all nodes,please wait......"
-if [ ! -f ~/.ssh/id_rsa ]; then
-    ssh-keygen -q -t rsa -N "" -f ~/.ssh/id_rsa
+if [ ! -f /root/.ssh/id_rsa ]; then
+    ssh-keygen -q -t rsa -N "" -f /root/.ssh/id_rsa
 fi
 
 #ssh with all nodes
