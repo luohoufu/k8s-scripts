@@ -26,6 +26,8 @@ etcd_endpoints=`echo $etcd_node_names $etcd_node_ips|awk  '{for (i = 1; i < NF/2
 user=etcd
 data=/var/lib/etcd
 exefile=/usr/bin/etcd
+cert=/ssl/etcd.pem
+certkey=/ssl/etcd-key.pem
 conf=/etc/etcd/etcd.conf
 service=/usr/lib/systemd/system/etcd.service
 
@@ -36,18 +38,23 @@ if ! command_exists ${exefile##*/}; then
 fi
 
 # check user
-if id -u $user >/dev/null 2>&1; then
-    userdel $user
-    rm -rf $data
-else
+if ! grep -q $user /etc/passwd; then
     useradd -c "Etcd User" -d $data -M -r -s /sbin/nologin $user
+else
+    rm -rf $data
+fi
+
+# check confdir
+if [ ! -d "${conf%/*}" ]; then
+     mkdir -p ${conf%/*}
 fi
 
 # check workdir
 if [ ! -d "$data" ]; then
     mkdir -p $data
-    chown $user:$user $data
-    chown $user:$user $exefile
+    for f in $data $exefile $cert $certkey $conf
+        chown -R $user:$user $f
+    done
 fi
 
 # config file
@@ -96,6 +103,7 @@ After=network.target
 
 [Service]
 Type=simple
+User=etcd
 WorkingDirectory=${data}
 EnvironmentFile=-${conf}
 # set GOMAXPROCS to number of processors
