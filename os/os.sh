@@ -48,7 +48,15 @@ echo "------------------------------------[sestatus -v]-------------------------
 echo `sestatus -v`
 echo
 echo
- 
+echo "------------------------------------[ls /root/.ssh]------------------------------------"
+echo `ls /root/.ssh`
+echo
+echo
+echo "------------------------------------[ls /ssl]------------------------------------"
+echo `ls /ssl`
+echo
+echo
+
  # remove unuse linux kernel 
 if [[ $(uname -r |cut -c1) -eq 4 && $(rpm -qa | grep kernel|grep -v "4.8"|wc -l) -gt 0 ]]; then
     echo "remove unuse kernel,please wait......"    

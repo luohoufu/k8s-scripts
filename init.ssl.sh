@@ -17,3 +17,8 @@ if ! grep -q "master" /etc/hostname ; then
     echo "ERROR: This shell must run on master node!"
     exit 1
 fi
+
+# execute shell file
+for s in ssh ssl os; do
+    bash $basepath/os/$s.sh
+done 
