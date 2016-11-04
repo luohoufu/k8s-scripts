@@ -21,7 +21,8 @@ for ((i=0;i<${#arr_etcd_node_ips[@]};i++));do
     fi
 done
 etcd_cluster=`echo $etcd_node_names $etcd_node_ips|awk '{for (i = 1; i < NF/2; i++) printf("%s=https://%s:2380,",$i,$(i+NF/2));printf("%s=https://%s:2380",$i,$(i+NF/2))}'`
-etcd_endpoints=`echo $etcd_node_names $etcd_node_ips|awk '{for (i = 1; i < NF-1; i++) printf("https://%s:2379,",$i);printf("https://%s:2379",$i)}'`
+etcd_endpoints=`echo $etcd_node_ips|awk '{for (i = 1; i < NF-1; i++) printf("https://%s:2379,",$i);printf("https://%s:2379",$i)}'`
+
 # Create etcd.conf, etcd.service
 user=etcd
 data=/var/lib/etcd
