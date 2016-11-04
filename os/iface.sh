@@ -8,7 +8,7 @@ command_exists() {
     command -v "$@" > /dev/null 2>&1
 }
 
-if ! ip a |grep -q "eth0" ; then
+if ip a |grep -q "eth0" ; then
     exit 0
 fi
 

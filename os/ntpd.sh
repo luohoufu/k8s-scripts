@@ -10,7 +10,7 @@ command_exists() {
 
 # setting ntp config
 if [ ! -f /etc/ntp.conf ]; then
-    echo "ERROR: You not install ntp service,please install it."
+    echo "ERROR: You not install ntp service,please install it!"
     exit 1
 fi
 if grep -q "aliyun" /etc/ntp.conf ; then

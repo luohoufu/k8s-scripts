@@ -12,41 +12,41 @@ command_exists() {
 echo "------------------------------------[w]------------------------------------"
 echo `w`
 echo 
-
+echo
 echo "------------------------------------[date]------------------------------------"
 echo `date`
 echo 
-
+echo
 echo "------------------------------------[hostname]------------------------------------"
 echo `hostname`
 echo
-
+echo
 echo "------------------------------------[hostname -i]------------------------------------"
 echo `hostname -i`
 echo
-
+echo
 echo "------------------------------------[uname -r]------------------------------------"
 echo `uname -r`
 echo
-
+echo
 echo "------------------------------------[cat /etc/hosts]------------------------------------"
 echo `cat /etc/hosts`
 echo
-
 echo "------------------------------------[ip a show eth0]------------------------------------"
 echo `ip a show eth0`
 echo 
-
+echo
 echo "------------------------------------[ps -ef|grep iptables]------------------------------------"
 echo `ps -ef|grep iptables`
 echo 
-
+echo
 echo "------------------------------------[ps -ef|grep firewalld]------------------------------------"
 echo `ps -ef|grep firewalld`
 echo
-
+echo
 echo "------------------------------------[sestatus -v]------------------------------------"
 echo `sestatus -v`
+echo
 echo
  
  # remove unuse linux kernel 
