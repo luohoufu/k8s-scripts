@@ -38,7 +38,7 @@ fi
 # check workdir
 if [ ! -d "$data" ]; then
     mkdir -p $data
-    for p in $data $exefile $cert $certkey ${conf%/*}; do
+    for p in $data $exefile ${conf%/*}; do
         chown -R $user:$user $p
     done
 fi
