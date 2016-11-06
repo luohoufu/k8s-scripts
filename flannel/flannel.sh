@@ -86,7 +86,7 @@ Before=docker.service
 Type=notify
 User=${user}
 EnvironmentFile=-${conf}
-ExecStart=/usr/bin/flanneld \${FLANNELD_ETCD_ENDPOINTS} \${FLANNELD_ETCD_PREFIX} \${FLANNELD_ETCD_CAFILE} \${FLANNELD_ETCD_CERTFILE} \${FLANNELD_ETCD_KEYFILE} \${FLANNELD_OPTIONS}
+ExecStart=/usr/bin/flanneld \${FLANNELD_ETCD_ENDPOINTS} \${FLANNELD_ETCD_PREFIX} \${FLANNELD_ETCD_CAFILE} \${FLANNELD_ETCD_CERTFILE} \${FLANNELD_ETCD_KEYFILE} \$FLANNELD_OPTIONS
 ExecStartPost=/usr/bin/bin/mk-docker-opts.sh -k DOCKER_NETWORK_OPTIONS -d /run/flannel/docker
 
 [Install]
