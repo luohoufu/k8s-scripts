@@ -74,7 +74,7 @@ FLANNELD_ETCD_CERTFILE="${cert}"
 FLANNELD_ETCD_KEYFILE="${certkey}"
 
 # Any additional options that you want to pas
-FLANNELD_OPTIONS="--ip-masq --iface=eth0"
+FLANNELD_OPTIONS="--ip-masq=true --iface=eth0"
 EOF
 
 cat <<EOF >$service
