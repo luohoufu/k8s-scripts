@@ -24,7 +24,7 @@ if [ ! -f /ssl/ca.pem ]; then
     cfssl gencert -loglevel 4 -initca "$basepath/config/ca-csr.json" | cfssljson -bare /ssl/ca
 fi
 
-for f in etcd flanneld apiserver; do
+for f in etcd flanneld server client; do
     if [ ! -f /ssl/$f.pem ]; then
         cfssl gencert -loglevel 4 -ca /ssl/ca.pem -ca-key /ssl/ca-key.pem -config "$basepath/config/ca-config.json" "$basepath/config/req-csr.json" | cfssljson -bare /ssl/$f
     fi
