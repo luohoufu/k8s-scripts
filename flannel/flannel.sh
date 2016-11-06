@@ -94,13 +94,12 @@ Before=docker.service
 Type=notify
 User=${user}
 EnvironmentFile=-${conf}
-ExecStart=/usr/bin/bin/flanneld --ip-masq \${FLANNEL_ETCD} \${FLANNEL_ETCD_KEY} \${FLANNEL_ETCD_SECURE} \${FLANNEL_OPTIONS}
+ExecStart=/usr/bin/flanneld --ip-masq \${FLANNEL_ETCD} \${FLANNEL_ETCD_KEY} \${FLANNEL_ETCD_SECURE} \${FLANNEL_OPTIONS}
 ExecStartPost=/usr/bin/bin/mk-docker-opts.sh -k DOCKER_NETWORK_OPTIONS -d /run/flannel/docker
 
 [Install]
 WantedBy=multi-user.target
 RequiredBy=docker.service
-EOF
 EOF
 
 systemctl daemon-reload
