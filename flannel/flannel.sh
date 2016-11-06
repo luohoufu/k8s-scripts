@@ -34,7 +34,7 @@ exefile=/usr/bin/flanneld
 ca=/ssl/ca.pem
 cert=/ssl/flanneld.pem
 certkey=/ssl/flanneld-key.pem
-conf=/etc/etcd/flanneld.conf
+conf=/etc/flannel/flanneld.conf
 service=/usr/lib/systemd/system/flanneld.service
 
 # check excute 
