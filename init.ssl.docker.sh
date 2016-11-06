@@ -16,8 +16,8 @@ if [[ ! `id -u` -eq 0 ]]; then
 # check config
 bash $basepath/os/check.sh
 
-# excute flannel shell
-bash $basepath/flannel/flannel.sh
+# excute docker shell
+bash $basepath/docker/docker.sh
 
 # rebooting system
 echo "You must reboot system,Do You Want Reboot System Now? [Y]/n"
