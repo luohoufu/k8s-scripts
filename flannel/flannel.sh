@@ -13,17 +13,7 @@ export PATH=$PATH:$basepath/tools
 flannel_key=`cat $basepath/config/k8s.json |jq '.flannel.key'|sed 's/\"//g'`
 flannel_value=`cat $basepath/config/k8s.json |jq '.flannel.value'`
 
-etcd_node_names=`cat $basepath/config/k8s.json |jq '.etcd.nodes[].name'|sed 's/\"//g'`
 etcd_node_ips=`cat $basepath/config/k8s.json |jq '.etcd.nodes[].ip'|sed 's/\"//g'`
-
-arr_etcd_node_names=($(echo $etcd_node_names))
-arr_etcd_node_ips=($(echo $etcd_node_ips))
-for ((i=0;i<${#arr_etcd_node_ips[@]};i++));do
-    if ip a |grep -q ${arr_etcd_node_ips[$i]}; then
-        etcd_name=${arr_etcd_node_names[$i]}
-        etcd_ip=${arr_etcd_node_ips[$i]}
-    fi
-done
 
 etcd_endpoints=`echo $etcd_node_ips|awk '{for (i = 1; i < NF; i++) printf("https://%s:2379,",$i);printf("https://%s:2379",$NF)}'`
 
