@@ -61,19 +61,19 @@ fi
 # config file
 cat <<EOF >$conf
 # etcd url location.  Point this to the server where etcd runs
-FLANNELD_ETCD_ENDPOINTS="${etcd_endpoints}"
+FLANNELD_ETCD_ENDPOINTS="--etcd-endpoints=${etcd_endpoints}"
 
 # etcd config key.  This is the configuration key that flannel queries
 # For address range assignment
-FLANNELD_ETCD_PREFIX="${flannel_key%/*}"
+FLANNELD_ETCD_PREFIX="--etcd=prefix=${flannel_key%/*}"
 
 # etcd secure
-FLANNELD_ETCD_CAFILE="${ca}"
-FLANNELD_ETCD_CERTFILE="${cert}"
-FLANNELD_ETCD_KEYFILE="${certkey}"
+FLANNELD_ETCD_CAFILE="--etcd-cafile=${ca}"
+FLANNELD_ETCD_CERTFILE="--etcd-certfile=${cert}"
+FLANNELD_ETCD_KEYFILE="--etcd-keyfile=${certkey}"
 
 # Any additional options that you want to pas
-FLANNELD_ETCD_IFACE="eth0"
+FLANNELD_OPTIONS="--ip-masq --iface=eth0"
 EOF
 
 cat <<EOF >$service
@@ -86,7 +86,7 @@ Before=docker.service
 Type=notify
 User=${user}
 EnvironmentFile=-${conf}
-ExecStart=/usr/bin/flanneld
+ExecStart=/usr/bin/flanneld \${FLANNELD_ETCD_ENDPOINTS} \${FLANNELD_ETCD_PREFIX} \${FLANNELD_ETCD_CAFILE} \${FLANNELD_ETCD_CERTFILE} \${FLANNELD_ETCD_KEYFILE} \${FLANNELD_OPTIONS}
 ExecStartPost=/usr/bin/bin/mk-docker-opts.sh -k DOCKER_NETWORK_OPTIONS -d /run/flannel/docker
 
 [Install]
