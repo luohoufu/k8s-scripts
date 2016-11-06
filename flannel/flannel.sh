@@ -19,6 +19,7 @@ etcd_endpoints=`echo $etcd_node_ips|awk '{for (i = 1; i < NF; i++) printf("https
 
 # Create etcd.conf, etcd.service
 user=flanneld
+name=flanneld
 data=/var/log/flanneld
 exefile=/usr/bin/flanneld
 ca=/ssl/ca.pem
@@ -35,7 +36,7 @@ fi
 
 # check user
 if ! grep -q $user /etc/passwd; then
-    useradd -c "Flanneld User" -d $data -M -r -s /sbin/nologin $user
+    useradd -c "$name user"  -d $data -M -r -s /sbin/nologin $user
 else
     rm -rf $data
 fi
@@ -95,9 +96,9 @@ RequiredBy=docker.service
 EOF
 
 systemctl daemon-reload
-systemctl enable flanneld
+systemctl enable $name
 
-flanneld --version > /dev/null 2>&1
+$name --version > /dev/null 2>&1
 if [[ $? -eq 0 ]];then
     echo 'install success!'
 else

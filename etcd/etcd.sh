@@ -27,6 +27,7 @@ etcd_endpoints=`echo $etcd_node_ips|awk '{for (i = 1; i < NF; i++) printf("https
 
 # Create etcd.conf, etcd.service
 user=etcd
+name=etcd
 data=/var/lib/etcd
 exefile=/usr/bin/etcd
 ca=/ssl/ca.pem
@@ -43,7 +44,7 @@ fi
 
 # check user
 if ! grep -q $user /etc/passwd; then
-    useradd -c "Etcd User" -d $data -M -r -s /sbin/nologin $user
+    useradd -c "$name user" -d $data -M -r -s /sbin/nologin $user
 else
     rm -rf $data
 fi
@@ -118,9 +119,9 @@ WantedBy=multi-user.target
 EOF
 
 systemctl daemon-reload
-systemctl enable etcd
+systemctl enable $name
 
-etcd --version > /dev/null 2>&1
+$name --version > /dev/null 2>&1
 if [[ $? -eq 0 ]];then
     echo 'install success!'
 else
