@@ -70,7 +70,7 @@ FLANNELD_ETCD_PREFIX="-etcd-prefix=${flannel_key%/*}"
 # etcd secure
 FLANNELD_ETCD_CAFILE="-etcd-cafile=${ca}"
 FLANNELD_ETCD_CERTFILE="-etcd-certfile=${cert}"
-FLANNELD_ETCD_KEYFILE="-etcd-keyfile${certkey}"
+FLANNELD_ETCD_KEYFILE="-etcd-keyfile=${certkey}"
 
 # Any additional options that you want to pas
 FLANNELD_OPTIONS="--iface=eth0 --ip-masq=true"
