@@ -68,7 +68,7 @@ FLANNEL_ETCD="--etcd-endpoints=${etcd_endpoints}"
 FLANNEL_ETCD_KEY="--etcd-prefix=${flannel_key%/*}"
 
 # etcd secure
-FLANNEL_ETCD_SECURE="--etcd-cafile=${ca} -etcd-certfile=${cert} -etcd-keyfile=${certkey}"
+FLANNEL_ETCD_SECURE="--etcd-cafile=${ca} --etcd-certfile=${cert} --etcd-keyfile=${certkey}"
 
 # Any additional options that you want to pas
 FLANNEL_OPTIONS="--iface=eth0 --logtostderr=false --log_dir=${data}/"
