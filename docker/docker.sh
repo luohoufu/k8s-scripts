@@ -62,7 +62,7 @@ After=flanneld.service
 Type=notify
 EnvironmentFile=-${conf}
 EnvironmentFile=-${netconf}
-ExecStart=/usr/bin/dockerd $OPTIONS $DOCKER_NETWORK_OPTIONS
+ExecStart=/usr/bin/dockerd \$OPTIONS \$DOCKER_NETWORK_OPTIONS
 ExecReload=/bin/kill -s HUP $MAINPID
 # Having non-zero Limit*s causes performance problems due to accounting overhead
 # in the kernel. We recommend using cgroups to do container-local accounting.
