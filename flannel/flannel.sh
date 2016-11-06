@@ -103,7 +103,7 @@ RequiredBy=docker.service
 EOF
 
 systemctl daemon-reload
-systemctl enable etcd
+systemctl enable flanneld
 
 flanneld --version > /dev/null 2>&1
 if [[ $? -eq 0 ]];then
