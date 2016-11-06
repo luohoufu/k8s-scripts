@@ -24,7 +24,7 @@ exefile=/usr/bin/flanneld
 ca=/ssl/ca.pem
 cert=/ssl/flanneld.pem
 certkey=/ssl/flanneld-key.pem
-conf=/etc/flannel/flanneld.conf
+conf=/etc/flanneld/flanneld.conf
 service=/usr/lib/systemd/system/flanneld.service
 
 # check excute 
@@ -65,7 +65,7 @@ FLANNEL_ETCD="-etcd-endpoints=${etcd_endpoints}"
 
 # etcd config key.  This is the configuration key that flannel queries
 # For address range assignment
-FLANNEL_ETCD_KEY="-etcd-prefix=${flannel_key}"
+FLANNEL_ETCD_KEY="-etcd-prefix=${flannel_key%/*}"
 
 # etcd secure
 FLANNEL_ETCD_SECURE="-etcd-cafile=${ca} -etcd-certfile=${cert} -etcd-keyfile=${certkey}"
