@@ -10,5 +10,5 @@ storage:
 http:
   addr: :8443
   tls: 
-    certificate: /etc/share/registry.pem
-    key: /etc/share/registry-key.pem
+    certificate: /ssl/client.pem
+    key: /ssl/client-key.pem
