@@ -30,6 +30,9 @@ spec:
           requests:
             cpu: 100m
             memory: 50Mi
+        env:
+        - name: KUBECONFIG
+          value: /etc/kubernetes/kubecfg
         ports:
         - containerPort: 9090
         args:
