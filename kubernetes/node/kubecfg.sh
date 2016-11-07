@@ -39,6 +39,11 @@ conf=/etc/kubernetes/kubecfg
 cert_base64=`cat $cert |base64|awk '{printf("%s"),$0}'`
 certkey_base64=`cat $certkey |base64|awk '{printf("%s"),$0}'`
 
+# check confdir
+if [ ! -d "${conf%/*}" ]; then
+     mkdir -p ${conf%/*}
+fi
+
 cat <<EOF >$conf
 apiVersion: v1
 kind: Config
