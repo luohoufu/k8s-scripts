@@ -75,7 +75,7 @@ FLANNELD_OPTS=" \\
                 -etcd-cafile=\${FLANNELD_ETCD_CAFILE}       \\
                 -etcd-certfile=\${FLANNELD_ETCD_CERTFILE}   \\
                 -etcd-keyfile=\${FLANNELD_ETCD_KEYFILE}     \\           
-                \${FLANNELD_OPTIONS}"
+                \$FLANNELD_OPTIONS"
 
 cat <<EOF >$service
 [Unit]
