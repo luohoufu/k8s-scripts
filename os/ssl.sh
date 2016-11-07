@@ -8,30 +8,52 @@ command_exists() {
     command -v "$@" > /dev/null 2>&1
 }
 
-if [ -f /ssl/synced ]; then
-    exit 0
+export PATH=$PATH:$basepath/tools
+
+cert_dir=`cat $workdir/k8s.json |jq '.cert.dir'|sed 's/\"//g'`
+ca_csr=`cat $workdir/k8s.json |jq '.cert.cacsr'`
+ca_cfg=`cat $workdir/k8s.json |jq '.cert.cacfg'`
+req_csr=`cat $workdir/k8s.json |jq '.cert.reqcsr'`
+
+workdir=/tmp
+check_path=$cert_dir/sync
+
+if [ -f $check_path ]; then
+    echo "Do you want run again? [Y]/n"
+    read confirm
+    if [[ "${confirm}" =~ ^[nN]$ ]]; then
+        exit 0
+    fi
 fi
 
 echo "gernerate ssl files and copy to all nodes,please wait......"
-if [ ! -d /ssl ]; then
-    mkdir -p /ssl
+if [ ! -d $cert_dir ]; then
+    mkdir -p $cert_dir
 fi
 
-export PATH=$PATH:$basepath/tools
+echo $ca_csr > $workdir/ca-csr.json
+echo $ca_cfg > $workdir/ca-config.json
+echo $req_csr > $workdir/req-csr.json
 
-#ssl with all nodes
-if [ ! -f /ssl/ca.pem ]; then
-    cfssl gencert -loglevel 4 -initca "$basepath/config/ca-csr.json" | cfssljson -bare /ssl/ca
+# ssl with all nodes
+if [ ! -f $cert_dir/ca.pem ]; then
+    ca=`cfssl gencert -loglevel 4 -initca "$workdir/ca-csr.json"`
+    echo -en $ca|jq ".cert"|sed 's/\"//g' > $cert_dir/ca.pem
+    echo -en $ca|jq ".key"|sed 's/\"//g' > $cert_dir/ca-key.pem
+    echo -en $ca|jq ".csr"|sed 's/\"//g' > $cert_dir/ca.csr
 fi
 
 for f in etcd flanneld server client; do
-    if [ ! -f /ssl/$f.pem ]; then
-        cfssl gencert -loglevel 4 -ca /ssl/ca.pem -ca-key /ssl/ca-key.pem -config "$basepath/config/ca-config.json" "$basepath/config/req-csr.json" | cfssljson -bare /ssl/$f
+    if [ ! -f $cert_dir/$f.pem ]; then
+        ca_$f=`cfssl gencert -loglevel 4 -ca $cert_dir/ca.pem -ca-key $cert_dir/ca-key.pem -config "$workdir/ca-config.json" "$workdir/req-csr.json"`
+        echo -en ca_$f|jq ".cert"|sed 's/\"//g' > $cert_dir/$f.pem
+        echo -en ca_$f|jq ".key"|sed 's/\"//g' > $cert_dir/$f-key.pem
+        echo -en ca_$f|jq ".csr"|sed 's/\"//g' > $cert_dir/$f.csr
     fi
 done
 
-k8s_node_username=`cat $basepath/config/k8s.json |jq '.k8s.username'|sed 's/\"//g'`
-k8s_node_names=`cat $basepath/config/k8s.json |jq '.k8s.nodes[].name'|sed 's/\"//g'`
+k8s_node_username=`cat $workdir/k8s.json |jq '.k8s.username'|sed 's/\"//g'`
+k8s_node_names=`cat $workdir/k8s.json |jq '.k8s.nodes[].name'|sed 's/\"//g'`
 
 arr_k8s_node_names=($(echo $k8s_node_names))
 
@@ -40,8 +62,12 @@ for ((i=0;i<${#arr_k8s_node_names[@]};i++));do
     if echo $k8s_node_hostname|grep -q "master"; then
         continue
     fi
-    scp -r /ssl $k8s_node_username@$k8s_node_hostname:/ > /dev/null 2>&1
-    touch /ssl/synced
+    scp -r $cert_dir $k8s_node_username@$k8s_node_hostname:/ > /dev/null 2>&1
 done
+
+# gernerate check_path
+if [ ! -f $check_path ]; then
+    touch $check_path
+fi
 
 echo "......done"

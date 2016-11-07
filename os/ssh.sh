@@ -8,8 +8,14 @@ command_exists() {
     command -v "$@" > /dev/null 2>&1
 }
 
-if [ -f /root/.ssh/synced ]; then
-    exit 0
+check_path=/root/.ssh/sync
+
+if [ -f $check_path ]; then
+    echo "Do you want run again? [Y]/n"
+    read confirm
+    if [[ "${confirm}" =~ ^[nN]$ ]]; then
+        exit 0
+    fi
 fi
 
 echo "gernerate ssh files and copy to all nodes,please wait......"
@@ -39,6 +45,10 @@ for ((i=0;i<${#arr_k8s_node_names[@]};i++));do
     fi
     expect $basepath/os/expect/expect_ssh.sh $k8s_node_hostname $k8s_node_username $k8s_node_passwd > /dev/null 2>&1
 done
-touch /root/.ssh/synced
+
+# gernerate check_path
+if [ ! -f $check_path ]; then
+    touch $check_path
+fi
 
 echo "......done"

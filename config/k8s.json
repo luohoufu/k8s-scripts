@@ -1,4 +1,55 @@
 {
+    "cert": {
+        "dir": "/ssl",
+        "cacfg": {
+            "signing": {
+                "default": {
+                    "usages": [
+                        "signing",
+                        "key encipherment",
+                        "server auth",
+                        "client auth"
+                    ],
+                    "expiry": "88888h"
+                }
+            }
+        },
+        "cacsr": {
+            "CN": "K8S",
+            "key": {
+                "algo": "rsa",
+                "size": 2048
+            },
+            "names": [
+                {
+                    "C": "CN",
+                    "L": "Changsha",
+                    "O": "K8s, Inc.",
+                    "OU": "Min Tech",
+                    "ST": "Hunan"
+                }
+            ]
+        },
+        "reqcsr": {
+            "CN": "K8S",
+            "hosts": [
+                "10.37.116.30",
+                "10.37.116.33",
+                "127.0.0.1"
+            ],
+            "key": {
+                "algo": "rsa",
+                "size": 2048
+            },
+            "names": [
+                {
+                    "L": "Changsha",
+                    "O": "K8s, Inc.",
+                    "OU": "Min Tech"
+                }
+            ]
+        }
+    },
     "etcd": {
         "nodes": [
             {
