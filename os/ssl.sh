@@ -10,10 +10,10 @@ command_exists() {
 
 export PATH=$PATH:$basepath/tools
 
-cert_dir=`cat $workdir/k8s.json |jq '.cert.dir'|sed 's/\"//g'`
-ca_csr=`cat $workdir/k8s.json |jq '.cert.cacsr'`
-ca_cfg=`cat $workdir/k8s.json |jq '.cert.cacfg'`
-req_csr=`cat $workdir/k8s.json |jq '.cert.reqcsr'`
+cert_dir=`cat $basepath/config/k8s.json |jq '.cert.dir'|sed 's/\"//g'`
+ca_csr=`cat $basepath/config/k8s.json |jq '.cert.cacsr'`
+ca_cfg=`cat $basepath/config/k8s.json |jq '.cert.cacfg'`
+req_csr=`cat $basepath/config/k8s.json |jq '.cert.reqcsr'`
 
 workdir=/tmp
 check_path=$cert_dir/sync
