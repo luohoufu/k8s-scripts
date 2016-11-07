@@ -69,13 +69,13 @@ FLANNELD_ETCD_KEYFILE="${certkey}"
 FLANNELD_OPTIONS="--ip-masq=true --iface=eth0"
 EOF
 
-FLANNELD_OPTS="                                           \\
-                -etcd-endpoints=\$FLANNELD_ETCD_ENDPOINTS \\
-                -etcd-prefix=\$FLANNELD_ETCD_PREFIX       \\
-                -etcd-cafile=\$FLANNELD_ETCD_CAFILE       \\
-                -etcd-certfile=\$FLANNELD_ETCD_CERTFILE   \\
-                -etcd-keyfile=\$FLANNELD_ETCD_KEYFILE     \\           
-                \$FLANNELD_OPTIONS"
+FLANNELD_OPTS="                                             \\
+                -etcd-endpoints=\${FLANNELD_ETCD_ENDPOINTS} \\
+                -etcd-prefix=\${FLANNELD_ETCD_PREFIX}       \\
+                -etcd-cafile=\${FLANNELD_ETCD_CAFILE}       \\
+                -etcd-certfile=\${FLANNELD_ETCD_CERTFILE}   \\
+                -etcd-keyfile=\${FLANNELD_ETCD_KEYFILE}     \\           
+                \${FLANNELD_OPTIONS}"
 
 cat <<EOF >$service
 [Unit]
@@ -87,7 +87,7 @@ Before=docker.service
 [Service]
 Type=notify
 EnvironmentFile=-${conf}
-ExecStart=/usr/bin/flanneld $FLANNELD_OPTS                         
+ExecStart=/usr/bin/flanneld ${FLANNELD_OPTS}                         
 ExecStartPost=/usr/bin/mk-docker-opts.sh -k DOCKER_NETWORK_OPTIONS -d /run/flannel/docker
 
 [Install]
