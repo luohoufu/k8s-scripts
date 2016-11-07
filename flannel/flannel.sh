@@ -13,6 +13,8 @@ export PATH=$PATH:$basepath/tools
 flannel_key=`cat $basepath/config/k8s.json |jq '.flannel.key'|sed 's/\"//g'`
 flannel_value=`cat $basepath/config/k8s.json |jq '.flannel.value'`
 
+etcd_node=`cat $basepath/config/k8s.json |jq '.etcd.nodes[0].ip'|sed 's/\"//g'`
+
 etcd_node_ips=`cat $basepath/config/k8s.json |jq '.etcd.nodes[].ip'|sed 's/\"//g'`
 
 etcd_endpoints=`echo $etcd_node_ips|awk '{for (i = 1; i < NF; i++) printf("https://%s:2379,",$i);printf("https://%s:2379",$NF)}'`
@@ -41,7 +43,8 @@ if [ ! -d "${conf%/*}" ]; then
 fi
 
 # check etcd flannel config
-if [ $(etcdctl --ca-file=$ca --cert-file=$cert --key-file=$certkey --endpoints=$etcd_endpoints ls "$flannel_key"|grep "network"|wc -l) -eq 0 ]; then
+#if [ $(etcdctl --ca-file=$ca --cert-file=$cert --key-file=$certkey --endpoints=$etcd_endpoints ls "$flannel_key"|grep "network"|wc -l) -eq 0 ]; then
+if [ $(curl --cacert $ca --cert $cert --key $certkey-X GET https://$etcd_node:2379/v2/keys/$flannel_key |grep "network"|wc -l) -eq 0 ]; then
      etcdctl --ca-file=$ca --cert-file=$cert --key-file=$certkey --endpoints=$etcd_endpoints set $flannel_key $flannel_value
 fi
 
