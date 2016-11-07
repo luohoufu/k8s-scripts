@@ -63,6 +63,7 @@
         ]
     },
     "flannel": {
+        "iface":"eth0",
         "key": "/flannel/network/config",
         "value": {
             "Network": "172.16.0.0/16",

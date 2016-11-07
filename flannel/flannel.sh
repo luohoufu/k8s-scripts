@@ -10,6 +10,7 @@ command_exists() {
 
 export PATH=$PATH:$basepath/tools
 
+flannel_iface=`cat $basepath/config/k8s.json |jq '.flannel.iface'|sed 's/\"//g'`
 flannel_key=`cat $basepath/config/k8s.json |jq '.flannel.key'|sed 's/\"//g'`
 flannel_value=`cat $basepath/config/k8s.json |jq '.flannel.value'`
 
@@ -66,7 +67,8 @@ FLANNELD_ETCD_CERTFILE="${cert}"
 FLANNELD_ETCD_KEYFILE="${certkey}"
 
 # Any additional options that you want to pas
-FLANNELD_OPTIONS="--ip-masq=true --iface=eth0"
+FLANNELD_IP_MASQ="true"
+FLANNELD_IFACE="${flannel_iface}"
 EOF
 
 FLANNELD_OPTS=" \\
@@ -74,8 +76,9 @@ FLANNELD_OPTS=" \\
                 -etcd-prefix=\${FLANNELD_ETCD_PREFIX}       \\
                 -etcd-cafile=\${FLANNELD_ETCD_CAFILE}       \\
                 -etcd-certfile=\${FLANNELD_ETCD_CERTFILE}   \\
-                -etcd-keyfile=\${FLANNELD_ETCD_KEYFILE}     \\           
-                \$FLANNELD_OPTIONS"
+                -etcd-keyfile=\${FLANNELD_ETCD_KEYFILE}     \\   
+                --ip-masq=\${FLANNELD_IP_MASQ}              \\   
+                --iface=\${FLANNELD_IFACE}"
 
 cat <<EOF >$service
 [Unit]
