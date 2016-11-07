@@ -67,13 +67,14 @@ FLANNELD_ETCD_KEYFILE="-etcd-keyfile=${certkey}"
 
 # other setting
 FLANNELD_IP_MASQ="--ip-masq=true"
-FLANNELD_IFACE="--iface=eth0--iface=eth0"
+FLANNELD_IFACE="--iface=eth0"
 
 # Any additional options that you want to pas
 FLANNELD_OPTIONS=""
 EOF
 
-FLANNELD_OPTS=" \${FLANNELD_ETCD_ENDPOINTS} \\
+FLANNELD_OPTS="                             \\
+                \${FLANNELD_ETCD_ENDPOINTS} \\
                 \${FLANNELD_ETCD_PREFIX}    \\
                 \${FLANNELD_ETCD_CAFILE}    \\
                 \${FLANNELD_ETCD_CERTFILE}  \\
