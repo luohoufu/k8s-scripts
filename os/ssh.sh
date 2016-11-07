@@ -11,7 +11,7 @@ command_exists() {
 check_path=/root/.ssh/sync
 
 if [ -f $check_path ]; then
-    echo "Do you want run again? [Y]/n"
+    echo "Do you want run $0 again? [Y]/n"
     read confirm
     if [[ "${confirm}" =~ ^[nN]$ ]]; then
         exit 0

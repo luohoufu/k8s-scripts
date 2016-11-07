@@ -17,13 +17,12 @@ req_csr=`cat $basepath/config/k8s.json |jq '.cert.reqcsr'`
 
 workdir=/tmp
 check_path=$cert_dir/sync
-echo $check_path
 
 if [ -f $check_path ]; then
-    echo "Do you want run again? [Y]/n"
+
+    echo "Do you want run $0 again? [Y]/n"
     read confirm
     if [[ "${confirm}" =~ ^[nN]$ ]]; then
-        echo "-----------"
         exit 0
     fi
 fi
