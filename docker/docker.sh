@@ -26,8 +26,6 @@ fi
 # check user
 if ! grep -q $user /etc/passwd; then
     useradd -c "$name user" -d $data -M -r -s /sbin/nologin $user
-else
-    rm -rf $data
 fi
 
 # check confdir

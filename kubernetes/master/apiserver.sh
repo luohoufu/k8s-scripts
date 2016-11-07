@@ -10,8 +10,24 @@ command_exists() {
 
 export PATH=$PATH:$basepath/tools
 
-etcd_node_ips=`cat $basepath/config/k8s.json |jq '.etcd.nodes[].ip'|sed 's/\"//g'`
+service_cluster_ip_range=`cat $basepath/config/k8s.json |jq '.k8s.svciprange'|sed 's/\"//g'`
+k8s_node_username=`cat $basepath/config/k8s.json |jq '.k8s.username'|sed 's/\"//g'`
+k8s_node_passwd=`cat $basepath/config/k8s.json |jq '.k8s.passwd'|sed 's/\"//g'`
 
+k8s_node_names=`cat $basepath/config/k8s.json |jq '.k8s.nodes[].name'|sed 's/\"//g'`
+k8s_node_ips=`cat $basepath/config/k8s.json |jq '.k8s.nodes[].ip'|sed 's/\"//g'`
+
+arr_k8s_node_names=($(echo $k8s_node_names))
+arr_k8s_node_ips=($(echo $k8s_node_ips))
+
+for ((i=0;i<${#arr_k8s_node_names[@]};i++));do
+    k8s_node_hostname=${arr_k8s_node_names[$i]}
+    if echo $k8s_node_hostname|grep -q "master"; then
+        k8s_master=${arr_k8s_node_ips[$i]}
+    fi
+done
+
+etcd_node_ips=`cat $basepath/config/k8s.json |jq '.etcd.nodes[].ip'|sed 's/\"//g'`
 etcd_endpoints=`echo $etcd_node_ips|awk '{for (i = 1; i < NF; i++) printf("https://%s:2379,",$i);printf("https://%s:2379",$NF)}'`
 
 # Create etcd.conf, etcd.service
@@ -21,8 +37,8 @@ exefile=/usr/bin/flanneld
 ca=/ssl/ca.pem
 cert=/ssl/server.pem
 certkey=/ssl/server-key.pem
-conf=/etc/kubernetes/config.conf
-apiconf=/etc/kubernetes/apiserver.conf
+certcsr=/ssl/server.csr
+conf=/etc/kubernetes/apiserver.conf
 service=/usr/lib/systemd/system/kube-apiserver.service
 
 # check excute 
@@ -34,8 +50,6 @@ fi
 # check user
 if ! grep -q $user /etc/passwd; then
     useradd -c "$name user"  -d $data -M -r -s /sbin/nologin $user
-else
-    rm -rf $data
 fi
 
 # check confdir
@@ -46,50 +60,95 @@ fi
 # check workdir
 if [ ! -d "$data" ]; then
     mkdir -p $data
-    for p in $data $exefile $cert $certkey ${conf%/*}; do
+    for p in $data $exefile $cert $certkey $certcsr ${conf%/*}; do
         chown -R $user:$user $p
     done
 fi
 
-# check etcd flannel config
-if [ $(etcdctl --ca-file=$ca --cert-file=$cert --key-file=$certkey --endpoints=$etcd_endpoints ls "$flannel_key"|grep "network"|wc -l) -eq 0 ]; then
-     etcdctl --ca-file=$ca --cert-file=$cert --key-file=$certkey --endpoints=$etcd_endpoints set $flannel_key $flannel_value
-fi
-
 # config file
 cat <<EOF >$conf
-# etcd url location.  Point this to the server where etcd runs
-FLANNELD_ETCD_ENDPOINTS="${etcd_endpoints}"
+# --logtostderr=true: log to standard error instead of files
+KUBE_LOGTOSTDERR="--logtostderr=true"
 
-# etcd config key.  This is the configuration key that flannel queries
-# For address range assignment
-FLANNELD_ETCD_PREFIX="${flannel_key%/*}"
+# --v=0: log level for V logs
+KUBE_LOG_LEVEL="--v=4"
 
-# etcd secure
-FLANNELD_ETCD_CAFILE="${ca}"
-FLANNELD_ETCD_CERTFILE="${cert}"
-FLANNELD_ETCD_KEYFILE="${certkey}"
+# --etcd-servers=[]: List of etcd servers to watch (http://ip:port), 
+# comma separated. Mutually exclusive with -etcd-config
+KUBE_ETCD_SERVERS="--etcd-servers=${etcd_endpoints}"
+KUBE_ETCD_CAFILE="--etcd-cafile=${ca}"
+KUBE_ETCD_CERTFILE="--etcd-certfile=${cert}"
+KUBE_ETCD_KEYFILE="--etcd-keyfile=${certkey}"
 
-# Any additional options that you want to pas
-FLANNELD_OPTIONS="--ip-masq=true --iface=eth0"
+# --insecure-bind-address=127.0.0.1: The IP address on which to serve the --insecure-port.
+KUBE_API_ADDRESS="--bind-address=${k8s_master}"
+
+# --insecure-port=8080: The port on which to serve unsecured, unauthenticated access.
+KUBE_API_PORT="--secure-port=6443"
+
+# --advertise-address=<nil>: The IP address on which to advertise 
+# the apiserver to members of the cluster.
+KUBE_ADVERTISE_ADDR="--advertise-address=${k8s_master}"
+
+# --allow-privileged=false: If true, allow privileged containers.
+KUBE_ALLOW_PRIV="--allow-privileged=false"
+
+# --service-cluster-ip-range=<nil>: A CIDR notation IP range from which to assign service cluster IPs. 
+# This must not overlap with any IP ranges assigned to nodes for pods.
+KUBE_SERVICE_ADDRESSES="--service-cluster-ip-range=${service_cluster_ip_range}"
+
+# --admission-control="AlwaysAdmit": Ordered list of plug-ins 
+# to do admission control of resources into cluster. 
+# Comma-delimited list of: 
+#   LimitRanger, AlwaysDeny, SecurityContextDeny, NamespaceExists, 
+#   NamespaceLifecycle, NamespaceAutoProvision,
+#   AlwaysAdmit, ServiceAccount, ResourceQuota, DefaultStorageClass
+KUBE_ADMISSION_CONTROL="--admission-control=ServiceAccount"
+
+# --client-ca-file="": If set, any request presenting a client certificate signed
+# by one of the authorities in the client-ca-file is authenticated with an identity
+# corresponding to the CommonName of the client certificate.
+KUBE_API_CLIENT_CA_FILE="--client-ca-file=${ca}"
+
+# --tls-cert-file="": File containing x509 Certificate for HTTPS.  (CA cert, if any,
+# concatenated after server cert). If HTTPS serving is enabled, and --tls-cert-file
+# and --tls-private-key-file are not provided, a self-signed certificate and key are
+# generated for the public address and saved to /var/run/kubernetes.
+KUBE_API_TLS_CERT_FILE="--tls-cert-file=${cert}"
+
+# --tls-private-key-file="": File containing x509 private key matching --tls-cert-file.
+KUBE_API_TLS_PRIVATE_KEY_FILE="--tls-private-key-file=${certkey}"
 EOF
+
+KUBE_APISERVER_OPTS="   \${KUBE_LOGTOSTDERR}         \\
+                        \${KUBE_LOG_LEVEL}           \\
+                        \${KUBE_ETCD_SERVERS}        \\
+                        \${KUBE_ETCD_CAFILE}         \\
+                        \${KUBE_ETCD_CERTFILE}       \\
+                        \${KUBE_ETCD_KEYFILE}        \\
+                        \${KUBE_API_ADDRESS}         \\
+                        \${KUBE_API_PORT}            \\
+                        \${KUBE_ADVERTISE_ADDR}      \\
+                        \${KUBE_ALLOW_PRIV}          \\
+                        \${KUBE_SERVICE_ADDRESSES}   \\
+                        \${KUBE_ADMISSION_CONTROL}   \\
+                        \${KUBE_API_CLIENT_CA_FILE}  \\
+                        \${KUBE_API_TLS_CERT_FILE}   \\
+                        \${KUBE_API_TLS_PRIVATE_KEY_FILE}"
+
 
 cat <<EOF >$service
 [Unit]
-Description=Flanneld overlay address etcd agent
-After=network.target
-After=etcd.target
-Before=docker.service
+Description=Kubernetes API Server
+Documentation=https://github.com/kubernetes/kubernetes
 
 [Service]
-Type=notify
 EnvironmentFile=-${conf}
-ExecStart=/usr/bin/flanneld -etcd-endpoints=\${FLANNELD_ETCD_ENDPOINTS} -etcd-prefix=\${FLANNELD_ETCD_PREFIX} -etcd-cafile=\${FLANNELD_ETCD_CAFILE} -etcd-certfile=\${FLANNELD_ETCD_CERTFILE} -etcd-keyfile=\${FLANNELD_ETCD_KEYFILE} \$FLANNELD_OPTIONS
-ExecStartPost=/usr/bin/mk-docker-opts.sh -k DOCKER_NETWORK_OPTIONS -d /run/flannel/docker
+ExecStart=/usr/bin/kube-apiserver ${KUBE_APISERVER_OPTS}
+Restart=on-failure
 
 [Install]
 WantedBy=multi-user.target
-RequiredBy=docker.service
 EOF
 
 systemctl daemon-reload
