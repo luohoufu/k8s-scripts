@@ -55,30 +55,24 @@ fi
 # config file
 cat <<EOF >$conf
 # etcd url location.  Point this to the server where etcd runs
-FLANNELD_ETCD_ENDPOINTS="${etcd_endpoints}"
+FLANNELD_ETCD_ENDPOINTS="--etcd-endpoints=${etcd_endpoints}"
 
 # etcd config key.  This is the configuration key that flannel queries
 # For address range assignment
-FLANNELD_ETCD_PREFIX="${flannel_key%/*}"
+FLANNELD_ETCD_PREFIX="--etcd-prefix=${flannel_key%/*}"
 
 # etcd secure
-FLANNELD_ETCD_CAFILE="${ca}"
-FLANNELD_ETCD_CERTFILE="${cert}"
-FLANNELD_ETCD_KEYFILE="${certkey}"
+FLANNELD_ETCD_SECURE="--etcd-cafile=${ca} --etcd-certfile=${cert} --etcd-keyfile=${certkey}"
 
 # Any additional options that you want to pas
-FLANNELD_IP_MASQ="true"
-FLANNELD_IFACE="${flannel_iface}"
+FLANNELD_OPTIONS="--ip-masq=true --iface=${flannel_iface}"
 EOF
 
 FLANNELD_OPTS=" \\
-                --ip-masq=\${FLANNELD_IP_MASQ}              \\   
-                --iface=\${FLANNELD_IFACE}                  \\ 
-                -etcd-endpoints=\${FLANNELD_ETCD_ENDPOINTS} \\
-                -etcd-prefix=\${FLANNELD_ETCD_PREFIX}       \\
-                -etcd-cafile=\${FLANNELD_ETCD_CAFILE}       \\
-                -etcd-certfile=\${FLANNELD_ETCD_CERTFILE}   \\
-                -etcd-keyfile=\${FLANNELD_ETCD_KEYFILE}"
+                \${FLANNELD_ETCD_ENDPOINTS} \\
+                \${FLANNELD_ETCD_PREFIX}    \\
+                \$FLANNELD_ETCD_SECURE      \\
+                \$FLANNELD_OPTIONS"
 
 cat <<EOF >$service
 [Unit]
