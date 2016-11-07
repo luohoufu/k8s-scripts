@@ -69,7 +69,7 @@ fi
 # config file
 cat <<EOF >$conf
 ###
-# kubernetes scheduler config
+# kubernetes proxy config
 
 # --logtostderr=true: log to standard error instead of files
 KUBE_LOGTOSTDERR="--logtostderr=false"
