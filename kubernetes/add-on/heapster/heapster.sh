@@ -16,6 +16,11 @@ if [ ! `id -u` -eq 0 ]; then
     exit 1;
 fi
 
+if ! grep -q "master" /etc/hostname ; then
+    echo "ERROR: This shell must run on master node!"
+    exit 1
+fi
+
 export PATH=$PATH:$basepath/tools
 
 registry_ip=`cat $basepath/config/k8s.json |jq '.docker.registry.ip'|sed 's/\"//g'`

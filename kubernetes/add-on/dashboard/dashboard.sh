@@ -16,6 +16,11 @@ if [ ! `id -u` -eq 0 ]; then
     exit 1;
 fi
 
+if ! grep -q "master" /etc/hostname ; then
+    echo "ERROR: This shell must run on master node!"
+    exit 1
+fi
+
 export PATH=$PATH:$basepath/tools
 
 registry_ip=`cat $basepath/config/k8s.json |jq '.docker.registry.ip'|sed 's/\"//g'`
@@ -43,7 +48,7 @@ sed -i "s/127.0.0.1/$k8s_master/" $basepath/kubernetes/add-on/dashboard/dashboar
 sed -i "s/registy_url/$registry_url/" $basepath/kubernetes/add-on/dashboard/dashboard-controller.yaml
 
 if [ $(docker images|grep "dashboard"|wc -l) -eq 0 ]; then
-    docker pull $registry_url/kubernetes-dashboard-amd64:v1.4.1   
+    docker pull $registry_url/kubernetes-dashboard-amd64:v1.4.0   
 fi
 
 if [ $(kubectl get po --namespace=kube-system| grep dashboard |wc -l) -eq 0 ]; then
