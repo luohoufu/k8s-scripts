@@ -86,6 +86,7 @@ KUBELET_ARGS=""
 EOF
 
 KUBELET_OPTS="  \${KUBE_LOGTOSTDERR}     \\
+                \${KUBE_LOGDIR}          \\
                 \${KUBE_LOG_LEVEL}       \\
                 \${NODE_ADDRESS}         \\
                 \${NODE_PORT}            \\
