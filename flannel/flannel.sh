@@ -72,13 +72,13 @@ FLANNELD_IFACE="${flannel_iface}"
 EOF
 
 FLANNELD_OPTS=" \\
+                --ip-masq=\${FLANNELD_IP_MASQ}              \\   
+                --iface=\${FLANNELD_IFACE}                  \\ 
                 -etcd-endpoints=\${FLANNELD_ETCD_ENDPOINTS} \\
                 -etcd-prefix=\${FLANNELD_ETCD_PREFIX}       \\
                 -etcd-cafile=\${FLANNELD_ETCD_CAFILE}       \\
                 -etcd-certfile=\${FLANNELD_ETCD_CERTFILE}   \\
-                -etcd-keyfile=\${FLANNELD_ETCD_KEYFILE}     \\   
-                --ip-masq=\${FLANNELD_IP_MASQ}              \\   
-                --iface=\${FLANNELD_IFACE}"
+                -etcd-keyfile=\${FLANNELD_ETCD_KEYFILE}"
 
 cat <<EOF >$service
 [Unit]
