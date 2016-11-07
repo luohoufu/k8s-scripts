@@ -43,6 +43,11 @@ if [ ! -d "${conf%/*}" ]; then
      mkdir -p ${conf%/*}
 fi
 
+# check iface
+if [ $(ip a |grep "flannel.1"|wc -l) -gt 0 ]; then
+    ip link del "flannel.1"
+fi
+
 # check etcd flannel config
 #if [ $(etcdctl --ca-file=$ca --cert-file=$cert --key-file=$certkey --endpoints=$etcd_endpoints ls "$flannel_key"|grep "network"|wc -l) -eq 0 ]; then
 #     etcdctl --ca-file=$ca --cert-file=$cert --key-file=$certkey --endpoints=$etcd_endpoints set $flannel_key $flannel_value
