@@ -39,7 +39,7 @@ for ((i=0;i<${#arr_k8s_node_names[@]};i++));do
 done
 
 # setting apiserver ip address
-sed -i "s/registy_url/$registry_url/g" $bashpath/kubernetes/add-on/dashboard/heapster-controller.yaml
+sed -i "s/registy_url/$registry_url/g" $basepath/kubernetes/add-on/dashboard/heapster-controller.yaml
 
 if [ $(docker images|grep "heapster"|wc -l) -eq 0 ]; then
     docker pull $registry_url/google_containers/heapster:v1.1.0
