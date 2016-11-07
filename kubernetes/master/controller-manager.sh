@@ -10,29 +10,13 @@ command_exists() {
 
 export PATH=$PATH:$basepath/tools
 
-k8s_node_username=`cat $basepath/config/k8s.json |jq '.k8s.username'|sed 's/\"//g'`
-k8s_node_passwd=`cat $basepath/config/k8s.json |jq '.k8s.passwd'|sed 's/\"//g'`
-
-k8s_node_names=`cat $basepath/config/k8s.json |jq '.k8s.nodes[].name'|sed 's/\"//g'`
-k8s_node_ips=`cat $basepath/config/k8s.json |jq '.k8s.nodes[].ip'|sed 's/\"//g'`
-
-arr_k8s_node_names=($(echo $k8s_node_names))
-arr_k8s_node_ips=($(echo $k8s_node_ips))
-
-for ((i=0;i<${#arr_k8s_node_names[@]};i++));do
-    k8s_node_hostname=${arr_k8s_node_names[$i]}
-    if echo $k8s_node_hostname|grep -q "master"; then
-        k8s_master=${arr_k8s_node_ips[$i]}
-    fi
-done
-
 cert_dir=`cat $basepath/config/k8s.json |jq '.cert.dir'|sed 's/\"//g'`
 
 # Create kube-controller-manager.conf, kube-controller-manager.service
 user=kube
 name=kube-controller-manager
 exefile=/usr/bin/kube-controller-manager
-data=/var/log/k8s/controller-manager
+data=/var/log/k8s/controller-manager/
 ca=$cert_dir/ca.pem
 cert=$cert_dir/server.pem
 certkey=$cert_dir/server-key.pem
@@ -66,9 +50,10 @@ fi
 
 # config file
 cat <<EOF >$conf
-KUBE_LOGTOSTDERR="--logtostderr=true"
+KUBE_LOGTOSTDERR="--logtostderr=false"
+KUBE_LOGDIR="--log_dir=${data}"
 KUBE_LOG_LEVEL="--v=4"
-KUBE_MASTER="--master=${k8s_master}:8080"
+KUBE_MASTER="--master=127.0.0.1:8080"
 
 # --root-ca-file="": If set, this root certificate authority will be included in
 # service account's token secret. This must be a valid PEM-encoded CA bundle.
@@ -80,6 +65,7 @@ KUBE_CONTROLLER_MANAGER_SERVICE_ACCOUNT_PRIVATE_KEY_FILE="--service-account-priv
 EOF
 
 KUBE_CONTROLLER_MANAGER_OPTS="  \${KUBE_LOGTOSTDERR} \\
+                                \${KUBE_LOGDIR}      \\
                                 \${KUBE_LOG_LEVEL}   \\
                                 \${KUBE_MASTER}      \\
                                 \${KUBE_CONTROLLER_MANAGER_ROOT_CA_FILE} \\

@@ -76,7 +76,7 @@ FLANNELD_ETCD_PREFIX="--etcd-prefix=${flannel_key%/*}"
 FLANNELD_ETCD_SECURE="--etcd-cafile=${ca} --etcd-certfile=${cert} --etcd-keyfile=${certkey}"
 
 # Any additional options that you want to pas
-FLANNELD_OPTIONS="--ip-masq=true --iface=${flannel_iface}"
+FLANNELD_OPTIONS="--ip-masq=true --iface=${flannel_iface} --logtostderr=false --log_dir=/var/log/flanneld/"
 EOF
 
 FLANNELD_OPTS=" \\

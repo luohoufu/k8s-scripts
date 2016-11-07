@@ -36,7 +36,7 @@ cert_dir=`cat $basepath/config/k8s.json |jq '.cert.dir'|sed 's/\"//g'`
 user=kube
 name=kube-apiserver
 exefile=/usr/bin/kube-apiserver
-data=/var/log/k8s/apiserver
+data=/var/log/k8s/apiserver/
 ca=$cert_dir/ca.pem
 cert=$cert_dir/server.pem
 certkey=$cert_dir/server-key.pem
@@ -71,7 +71,10 @@ fi
 # config file
 cat <<EOF >$conf
 # --logtostderr=true: log to standard error instead of files
-KUBE_LOGTOSTDERR="--logtostderr=true"
+KUBE_LOGTOSTDERR="--logtostderr=false"
+
+# --log_dir= save log info by file
+KUBE_LOGDIR="--log_dir=${data}"
 
 # --v=0: log level for V logs
 KUBE_LOG_LEVEL="--v=4"
@@ -124,6 +127,7 @@ KUBE_API_TLS_PRIVATE_KEY_FILE="--tls-private-key-file=${certkey}"
 EOF
 
 KUBE_APISERVER_OPTS="   \${KUBE_LOGTOSTDERR}         \\
+                        \${KUBE_LOGDIR}              \\
                         \${KUBE_LOG_LEVEL}           \\
                         \${KUBE_ETCD_SERVERS}        \\
                         \${KUBE_ETCD_CAFILE}         \\

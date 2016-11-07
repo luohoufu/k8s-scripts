@@ -13,6 +13,11 @@ if [[ ! `id -u` -eq 0 ]]; then
      exit 1;
  fi
 
+if ! grep -q "master" /etc/hostname ; then
+    echo "ERROR: This shell must run on master node!"
+    exit 1
+fi
+
 # check config
 bash $basepath/os/check.sh
 

@@ -10,29 +10,13 @@ command_exists() {
 
 export PATH=$PATH:$basepath/tools
 
-k8s_node_username=`cat $basepath/config/k8s.json |jq '.k8s.username'|sed 's/\"//g'`
-k8s_node_passwd=`cat $basepath/config/k8s.json |jq '.k8s.passwd'|sed 's/\"//g'`
-
-k8s_node_names=`cat $basepath/config/k8s.json |jq '.k8s.nodes[].name'|sed 's/\"//g'`
-k8s_node_ips=`cat $basepath/config/k8s.json |jq '.k8s.nodes[].ip'|sed 's/\"//g'`
-
-arr_k8s_node_names=($(echo $k8s_node_names))
-arr_k8s_node_ips=($(echo $k8s_node_ips))
-
-for ((i=0;i<${#arr_k8s_node_names[@]};i++));do
-    k8s_node_hostname=${arr_k8s_node_names[$i]}
-    if echo $k8s_node_hostname|grep -q "master"; then
-        k8s_master=${arr_k8s_node_ips[$i]}
-    fi
-done
-
 cert_dir=`cat $basepath/config/k8s.json |jq '.cert.dir'|sed 's/\"//g'`
 
 # Create kube-scheduler.conf, kube-scheduler.service
 user=kube
 name=kube-scheduler
 exefile=/usr/bin/kube-scheduler
-data=/var/log/k8s/scheduler
+data=/var/log/k8s/scheduler/
 ca=$cert_dir/ca.pem
 cert=$cert_dir/server.pem
 certkey=$cert_dir/server-key.pem
@@ -70,12 +54,15 @@ cat <<EOF >$conf
 # kubernetes scheduler config
 
 # --logtostderr=true: log to standard error instead of files
-KUBE_LOGTOSTDERR="--logtostderr=true"
+KUBE_LOGTOSTDERR="--logtostderr=false"
+
+# --log_dir= save log info by file
+KUBE_LOGDIR="--log_dir=${data}"
 
 # --v=0: log level for V logs
 KUBE_LOG_LEVEL="--v=4"
 
-KUBE_MASTER="--master=${k8s_master}:8080"
+KUBE_MASTER="--master=127.0.0.1:8080"
 
 # Add your own!
 KUBE_SCHEDULER_ARGS=""
@@ -83,6 +70,7 @@ KUBE_SCHEDULER_ARGS=""
 EOF
 
 KUBE_SCHEDULER_OPTS="   \${KUBE_LOGTOSTDERR}     \\
+                        \${KUBE_LOGDIR}          \\
                         \${KUBE_LOG_LEVEL}       \\
                         \${KUBE_MASTER}          \\
                         \${KUBE_SCHEDULER_ARGS}"
