@@ -44,8 +44,11 @@ fi
 
 # check etcd flannel config
 #if [ $(etcdctl --ca-file=$ca --cert-file=$cert --key-file=$certkey --endpoints=$etcd_endpoints ls "$flannel_key"|grep "network"|wc -l) -eq 0 ]; then
-if [ $(curl --cacert $ca --cert $cert --key $certkey-X GET https://$etcd_node:2379/v2/keys/$flannel_key |grep "network"|wc -l) -eq 0 ]; then
-     etcdctl --ca-file=$ca --cert-file=$cert --key-file=$certkey --endpoints=$etcd_endpoints set $flannel_key $flannel_value
+#     etcdctl --ca-file=$ca --cert-file=$cert --key-file=$certkey --endpoints=$etcd_endpoints set $flannel_key $flannel_value
+#fi
+res=`curl -s --cacert $ca --cert $cert --key $certkey -X GET https://$etcd_node:2379/v2/keys$flannel_key`
+if [ $(echo $res |grep "errorCode"|wc -l) -eq 1 ]; then
+    etcdctl --ca-file=$ca --cert-file=$cert --key-file=$certkey --endpoints=$etcd_endpoints set "$flannel_key" "$flannel_value" > /dev/null 2>&1
 fi
 
 # config file
