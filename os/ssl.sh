@@ -22,6 +22,7 @@ if [ -f $check_path ]; then
     echo "Do you want run again? [Y]/n"
     read confirm
     if [[ "${confirm}" =~ ^[nN]$ ]]; then
+        echo "-----------"
         exit 0
     fi
 fi
@@ -46,9 +47,9 @@ fi
 for f in etcd flanneld server client; do
     if [ ! -f $cert_dir/$f.pem ]; then
         ca_$f=`cfssl gencert -loglevel 4 -ca $cert_dir/ca.pem -ca-key $cert_dir/ca-key.pem -config "$workdir/ca-config.json" "$workdir/req-csr.json"`
-        echo -en ca_$f|jq ".cert"|sed 's/\"//g' > $cert_dir/$f.pem
-        echo -en ca_$f|jq ".key"|sed 's/\"//g' > $cert_dir/$f-key.pem
-        echo -en ca_$f|jq ".csr"|sed 's/\"//g' > $cert_dir/$f.csr
+        echo -en ${ca_$f}|jq ".cert"|sed 's/\"//g' > $cert_dir/$f.pem
+        echo -en ${ca_$f}|jq ".key"|sed 's/\"//g' > $cert_dir/$f-key.pem
+        echo -en ${ca_$f}|jq ".csr"|sed 's/\"//g' > $cert_dir/$f.csr
     fi
 done
 
