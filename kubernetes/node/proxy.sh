@@ -117,7 +117,7 @@ systemctl enable $name > /dev/null 2>&1
 
 $name --version > /dev/null 2>&1
 if [[ $? -eq 0 ]];then
-    echo 'install success!'
+    echo "$name install success!"
 else
-    echo 'install error!'
+    echo "$name install error!"
 fi

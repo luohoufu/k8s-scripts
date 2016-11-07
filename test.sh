@@ -31,3 +31,9 @@ arr_k8s_node_names=($(echo $k8s_node_names))
 for ((i=0;i<${#arr_k8s_node_names[@]};i++));do
    echo ${arr_k8s_node_names[$i]}
 done
+
+
+registry_ip=`cat $basepath/config/k8s.json |jq '.docker.registry.ip'|sed 's/\"//g'`
+registry_port=`cat $basepath/config/k8s.json |jq '.docker.registry.port'|sed 's/\"//g'`
+registry_url=$registry_ip + ":" + $registry_port
+echo $registry_url

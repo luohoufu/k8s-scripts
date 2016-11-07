@@ -63,7 +63,7 @@
         ]
     },
     "flannel": {
-        "iface":"eth0",
+        "iface": "eth0",
         "key": "/flannel/network/config",
         "value": {
             "Network": "172.16.0.0/16",
@@ -72,6 +72,13 @@
                 "Type": "vxlan",
                 "VNI": 1
             }
+        }
+    },
+    "docker": {
+        "registry": {
+            "name": "registry.dev",
+            "ip": "10.37.116.11",
+            "port": 8443
         }
     },
     "k8s": {

@@ -64,3 +64,8 @@ contexts:
   name: service-account-context
 current-context: service-account-context    
 EOF
+
+#setting alias
+if ! grep -q "kubectl" /root/.bashrc ; then
+    sed -i "/alias etcdctl/a\alias kubectl='kubectl --kubeconfig=$conf" /root/.bashrc
+fi
