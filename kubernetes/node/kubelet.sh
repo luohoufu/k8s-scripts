@@ -17,7 +17,7 @@ node_ip=`hostname -i`
 user=kube
 name=kubelet
 exefile=/usr/bin/kubelet
-data=/var/log/k8s/scheduler/
+data=/var/log/k8s/kubelet/
 ca=$cert_dir/ca.pem
 cert=$cert_dir/client.pem
 certkey=$cert_dir/client-key.pem
@@ -53,7 +53,7 @@ fi
 # config file
 cat <<EOF >$conf
 ###
-# kubernetes scheduler config
+# kubernetes kubelet config
 
 # --logtostderr=true: log to standard error instead of files
 KUBE_LOGTOSTDERR="--logtostderr=false"
