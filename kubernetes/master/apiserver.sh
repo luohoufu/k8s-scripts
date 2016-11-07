@@ -163,7 +163,7 @@ WantedBy=multi-user.target
 EOF
 
 systemctl daemon-reload
-systemctl enable $name
+systemctl enable $name > /dev/null 2>&1
 
 $name --version > /dev/null 2>&1
 if [[ $? -eq 0 ]];then

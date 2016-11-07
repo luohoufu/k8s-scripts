@@ -45,7 +45,7 @@ fi
 cat <<EOF >$conf
 # /etc/docker/docker
 # Modify these options if you want to change the way the docker daemon runs
-OPTIONS='--storage-driver=overlay --graph=/opt/docker --selinux-enabled=false'
+OPTIONS='--storage-driver=overlay2 --graph=/opt/docker --selinux-enabled=false'
 EOF
 
 cat <<EOF >$service

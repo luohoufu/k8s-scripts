@@ -11,6 +11,7 @@ command_exists() {
 export PATH=$PATH:$basepath/tools
 
 cert_dir=`cat $basepath/config/k8s.json |jq '.cert.dir'|sed 's/\"//g'`
+service_cluster_ip_range=`cat $basepath/config/k8s.json |jq '.k8s.svciprange'|sed 's/\"//g'`
 
 # Create kube-controller-manager.conf, kube-controller-manager.service
 user=kube
@@ -54,6 +55,8 @@ KUBE_LOGTOSTDERR="--logtostderr=false"
 KUBE_LOGDIR="--log_dir=${data}"
 KUBE_LOG_LEVEL="--v=4"
 KUBE_MASTER="--master=127.0.0.1:8080"
+KUBE_NODE_CIDRS="--allocate-node-cidrs=true"
+KUBE_CLUSTER_CIDR="--cluster-cidr==${service_cluster_ip_range}"
 
 # --root-ca-file="": If set, this root certificate authority will be included in
 # service account's token secret. This must be a valid PEM-encoded CA bundle.
@@ -64,10 +67,12 @@ KUBE_CONTROLLER_MANAGER_ROOT_CA_FILE="--root-ca-file=${ca}"
 KUBE_CONTROLLER_MANAGER_SERVICE_ACCOUNT_PRIVATE_KEY_FILE="--service-account-private-key-file=${certkey}"
 EOF
 
-KUBE_CONTROLLER_MANAGER_OPTS="  \${KUBE_LOGTOSTDERR} \\
-                                \${KUBE_LOGDIR}      \\
-                                \${KUBE_LOG_LEVEL}   \\
-                                \${KUBE_MASTER}      \\
+KUBE_CONTROLLER_MANAGER_OPTS="  \${KUBE_LOGTOSTDERR}  \\
+                                \${KUBE_LOGDIR}       \\
+                                \${KUBE_LOG_LEVEL}    \\
+                                \${KUBE_MASTER}       \\
+                                \${KUBE_NODE_CIDRS}   \\
+                                \${KUBE_CLUSTER_CIDR} \\
                                 \${KUBE_CONTROLLER_MANAGER_ROOT_CA_FILE} \\
                                 \${KUBE_CONTROLLER_MANAGER_SERVICE_ACCOUNT_PRIVATE_KEY_FILE}"
 
@@ -88,7 +93,7 @@ WantedBy=multi-user.target
 EOF
 
 systemctl daemon-reload
-systemctl enable $name
+systemctl enable $name > /dev/null 2>&1
 
 $name --version > /dev/null 2>&1
 if [[ $? -eq 0 ]];then

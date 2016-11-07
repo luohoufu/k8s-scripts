@@ -66,7 +66,6 @@ KUBE_MASTER="--master=127.0.0.1:8080"
 
 # Add your own!
 KUBE_SCHEDULER_ARGS=""
-
 EOF
 
 KUBE_SCHEDULER_OPTS="   \${KUBE_LOGTOSTDERR}     \\
@@ -92,7 +91,7 @@ WantedBy=multi-user.target
 EOF
 
 systemctl daemon-reload
-systemctl enable $name
+systemctl enable $name > /dev/null 2>&1
 
 $name --version > /dev/null 2>&1
 if [[ $? -eq 0 ]];then
