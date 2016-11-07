@@ -87,7 +87,7 @@ Before=docker.service
 [Service]
 Type=notify
 EnvironmentFile=-${conf}
-ExecStart=/usr/bin/flanneld $FLANNELD_OPTS                         
+ExecStart=/usr/bin/flanneld ${FLANNELD_OPTS}                         
 ExecStartPost=/usr/bin/mk-docker-opts.sh -k DOCKER_NETWORK_OPTIONS -d /run/flannel/docker
 
 [Install]
