@@ -1,0 +1,14 @@
+version: 0.1
+log:
+  fields:
+  service: registry
+storage:
+  cache:
+    layerinfo: inmemory
+  filesystem:
+    rootdirectory: /
+http:
+  addr: :8443
+  tls: 
+    certificate: /etc/share/registry.pem
+    key: /etc/share/registry-key.pem
