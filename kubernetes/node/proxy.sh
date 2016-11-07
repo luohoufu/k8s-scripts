@@ -31,7 +31,6 @@ cert_dir=`cat $basepath/config/k8s.json |jq '.cert.dir'|sed 's/\"//g'`
 node_ip=`hostname -i`
 
 # Create kube-proxy.conf, kube-proxy.service
-user=kube
 name=kube-proxy
 exefile=/usr/bin/kube-proxy
 data=/var/log/k8s/proxy/
@@ -46,11 +45,6 @@ service=/usr/lib/systemd/system/kube-proxy.service
 if ! command_exists ${exefile##*/}; then
      echo "Please Copy `basename $exefile` to $exefile"
      exit 1;
-fi
-
-# check user
-if ! grep -q $user /etc/passwd; then
-    useradd -c "$name user"  -d $data -M -r -s /sbin/nologin $user
 fi
 
 # check confdir
@@ -83,18 +77,24 @@ KUBE_LOG_LEVEL="--v=4"
 # --hostname-override="": If non-empty, will use this string as identification instead of the actual hostname.
 NODE_HOSTNAME="--hostname-override=${node_ip}"
 
-# --master="": The address of the Kubernetes API server (overrides any value in kubeconfig)
-KUBE_MASTER="--master=https://${k8s_master}:6443"
+# --kubeconfig="": Path to a kubeconfig file, specifying how to connect to the API server. 
+# --api-servers will be used for the location unless --require-kubeconfig is set. (default "/var/lib/kubelet/kubeconfig")
+KUBELET_CONFIG="--kubeconfig=${cfg}"
+
+# --require-kubeconfig="": If true the Kubelet will exit if there are configuration errors, 
+# and will ignore the value of --api-servers in favor of the server defined in the kubeconfig file.
+KUBE_REQUIRE_CONFIG="--require-kubeconfig=true"
 
 --proxy-mode="": Which proxy mode to use: 'userspace' (older) or 'iptables' (faster).
 KUBE_PROXY_MODE="--proxy-mode=iptables"
 EOF
 
-KUBE_PROXY_OPTS="   \${KUBE_LOGTOSTDERR}     \\
-                    \${KUBE_LOGDIR}          \\
-                    \${KUBE_LOG_LEVEL}       \\
-                    \${NODE_HOSTNAME}        \\
-                    \${KUBE_MASTER}          \\
+KUBE_PROXY_OPTS="   \${KUBE_LOGTOSTDERR}       \\
+                    \${KUBE_LOGDIR}            \\
+                    \${KUBE_LOG_LEVEL}         \\
+                    \${NODE_HOSTNAME}          \\
+                    \${KUBE_CONFIG}            \\
+                    \${KUBE_REQUIRE_CONFIG}    \\
                     \${KUBE_PROXY_MODE}"
 cat <<EOF >$service
 [Unit]

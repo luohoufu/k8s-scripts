@@ -14,7 +14,6 @@ cert_dir=`cat $basepath/config/k8s.json |jq '.cert.dir'|sed 's/\"//g'`
 node_ip=`hostname -i`
 
 # Create kubelet.conf, kubelet.service
-user=kube
 name=kubelet
 exefile=/usr/bin/kubelet
 data=/var/log/k8s/kubelet/
@@ -30,11 +29,6 @@ service=/usr/lib/systemd/system/kubelet.service
 if ! command_exists ${exefile##*/}; then
      echo "Please Copy `basename $exefile` to $exefile"
      exit 1;
-fi
-
-# check user
-if ! grep -q $user /etc/passwd; then
-    useradd -c "$name user"  -d $data -M -r -s /sbin/nologin $user
 fi
 
 # check confdir
@@ -73,13 +67,13 @@ NODE_PORT="--port=10250"
 # --hostname-override="": If non-empty, will use this string as identification instead of the actual hostname.
 NODE_HOSTNAME="--hostname-override=${node_ip}"
 
-# --require-kubeconfig="": If true the Kubelet will exit if there are configuration errors, 
-# and will ignore the value of --api-servers in favor of the server defined in the kubeconfig file.
-KUBELET_RE_CONFIG="--require-kubeconfig=true"
-
 # --kubeconfig="": Path to a kubeconfig file, specifying how to connect to the API server. 
 # --api-servers will be used for the location unless --require-kubeconfig is set. (default "/var/lib/kubelet/kubeconfig")
-KUBELET_CONFIG="--kubeconfig=${cfg}"
+KUBE_CONFIG="--kubeconfig=${cfg}"
+
+# --require-kubeconfig="": If true the Kubelet will exit if there are configuration errors, 
+# and will ignore the value of --api-servers in favor of the server defined in the kubeconfig file.
+KUBE_REQUIRE_CONFIG="--require-kubeconfig=true"
 
 # --allow-privileged=false: If true, allow containers to request privileged mode. [default=false]
 KUBE_ALLOW_PRIV="--allow-privileged=false"
@@ -91,16 +85,16 @@ KUBE_POD_INFRA="--pod-infra-container-image=registry.access.redhat.com/rhel7/pod
 KUBELET_ARGS=""
 EOF
 
-KUBELET_OPTS="  \${KUBE_LOGTOSTDERR}     \\
-                \${KUBE_LOGDIR}          \\
-                \${KUBE_LOG_LEVEL}       \\
-                \${NODE_ADDRESS}         \\
-                \${NODE_PORT}            \\
-                \${NODE_HOSTNAME}        \\
-                \${KUBELET_CONFIG}       \\                
-                \${KUBELET_RE_CONFIG}    \\
-                \${KUBE_ALLOW_PRIV}      \\
-                \${KUBE_POD_INFRA}       \\
+KUBELET_OPTS="  \${KUBE_LOGTOSTDERR}       \\
+                \${KUBE_LOGDIR}            \\
+                \${KUBE_LOG_LEVEL}         \\
+                \${NODE_ADDRESS}           \\
+                \${NODE_PORT}              \\
+                \${NODE_HOSTNAME}          \\
+                \${KUBE_CONFIG}            \\                
+                \${KUBE_REQUIRE_CONFIG}    \\
+                \${KUBE_ALLOW_PRIV}        \\
+                \${KUBE_POD_INFRA}         \\
                 \${KUBELET_ARGS}"
 
 cat <<EOF >$service
