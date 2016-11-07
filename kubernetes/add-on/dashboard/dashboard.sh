@@ -47,10 +47,6 @@ done
 sed -i "s/127.0.0.1/$k8s_master/" $basepath/kubernetes/add-on/dashboard/dashboard-controller.yaml
 sed -i "s/registy_url/$registry_url/" $basepath/kubernetes/add-on/dashboard/dashboard-controller.yaml
 
-if [ $(docker images|grep "dashboard"|wc -l) -eq 0 ]; then
-    docker pull $registry_url/kubernetes-dashboard-amd64:v1.4.0   
-fi
-
 if [ $(kubectl get po --namespace=kube-system| grep dashboard |wc -l) -eq 0 ]; then
     kubectl create -f  $basepath/kubernetes/add-on/dashboard/dashboard-controller.yaml
     kubectl create -f  $basepath/kubernetes/add-on/dashboard/dashboard-service.yaml

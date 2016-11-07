@@ -46,13 +46,6 @@ done
 # setting apiserver ip address
 sed -i "s/registy_url/$registry_url/g" $basepath/kubernetes/add-on/dashboard/heapster-controller.yaml
 
-if [ $(docker images|grep "heapster"|wc -l) -eq 0 ]; then
-    docker pull $registry_url/google_containers/heapster:v1.1.0
-fi
-if [ $(docker images|grep "resizer"|wc -l) -eq 0 ]; then
-    docker pull $registry_url//google_containers/addon-resizer:v1.0
-fi
-
 if [ $(kubectl get po --namespace=kube-system| grep heapster |wc -l) -eq 0 ]; then
     kubectl create -f $basepath/heapster-controller.yaml
     kubectl create -f $basepath/heapster-service.yaml
