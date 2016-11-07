@@ -85,17 +85,14 @@ KUBE_POD_INFRA="--pod-infra-container-image=registry.access.redhat.com/rhel7/pod
 KUBELET_ARGS=""
 EOF
 
-KUBELET_OPTS="  \${KUBE_LOGTOSTDERR}       \\
-                \${KUBE_LOGDIR}            \\
-                \${KUBE_LOG_LEVEL}         \\
-                \${NODE_ADDRESS}           \\
-                \${NODE_PORT}              \\
-                \${NODE_HOSTNAME}          \\
-                \${KUBE_CONFIG}            \\                
-                \${KUBE_REQUIRE_CONFIG}    \\
-                \${KUBE_ALLOW_PRIV}        \\
-                \${KUBE_POD_INFRA}         \\
-                \${KUBELET_ARGS}"
+KUBELET_OPTS="   \${KUBE_LOGTOSTDERR}     \\
+                    \${KUBE_LOG_LEVEL}       \\
+                    \${NODE_ADDRESS}         \\
+                    \${NODE_PORT}            \\
+                    \${NODE_HOSTNAME}        \\
+                    \${KUBELET_API_SERVER}   \\
+                    \${KUBE_ALLOW_PRIV}      \\
+                    \${KUBELET_ARGS}"
 
 cat <<EOF >$service
 [Unit]
