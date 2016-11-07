@@ -17,12 +17,15 @@ etcd_node_ips=`cat $basepath/config/k8s.json |jq '.etcd.nodes[].ip'|sed 's/\"//g
 
 etcd_endpoints=`echo $etcd_node_ips|awk '{for (i = 1; i < NF; i++) printf("https://%s:2379,",$i);printf("https://%s:2379",$NF)}'`
 
+cert_dir=`cat $basepath/config/k8s.json |jq '.cert.dir'|sed 's/\"//g'`
+
 # Create flanneld.conf, flanneld.service
 name=flanneld
 exefile=/usr/bin/flanneld
-ca=/ssl/ca.pem
-cert=/ssl/flanneld.pem
-certkey=/ssl/flanneld-key.pem
+ca=$cert_dir/ca.pem
+cert=$cert_dir/flanneld.pem
+certkey=$cert_dir/flanneld-key.pem
+certcsr=$cert_dir/flanneld.csr
 conf=/etc/flanneld/flanneld.conf
 service=/usr/lib/systemd/system/flanneld.service
 

@@ -8,6 +8,8 @@ command_exists() {
     command -v "$@" > /dev/null 2>&1
 }
 
+rsa_path=/root/.ssh/id_rsa
+host_path=/root/.ssh/known_hosts
 check_path=/root/.ssh/sync
 
 if [ -f $check_path ]; then
@@ -19,8 +21,8 @@ if [ -f $check_path ]; then
 fi
 
 echo "gernerate ssh files and copy to all nodes,please wait......"
-if [ ! -f /root/.ssh/id_rsa ]; then
-    ssh-keygen -q -t rsa -N "" -f /root/.ssh/id_rsa
+if [ ! -f $rsa_path ]; then
+    ssh-keygen -q -t rsa -N "" -f $rsa_path
 fi
 
 #ssh with all nodes
@@ -38,8 +40,8 @@ for ((i=0;i<${#arr_k8s_node_names[@]};i++));do
     if echo $k8s_node_hostname|grep -q "master"; then
         continue
     fi
-    if [ -f /root/.ssh/known_hosts ]; then
-        if grep -wq "$k8s_node_hostname" /root/.ssh/known_hosts; then
+    if [ -f $host_path ]; then
+        if grep -wq "$k8s_node_hostname" $host_path; then
             continue
         fi
     fi

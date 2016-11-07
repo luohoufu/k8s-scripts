@@ -12,14 +12,17 @@ if [[ ! `id -u` -eq 0 ]]; then
      echo "Please run this shell by root user!"
      exit 1;
  fi
+
 # add execute permission
  for f in $basepath/tools/*;do
     if test -f $f; then
         chmod +x $f
     fi
  done
+
 # add execute permission for shell
 find . -name '*.sh' -exec chmod +x {} \;
+
 # dowload tool
 if ! command_exists wget; then
     yum -y install wget > /dev/null 2>&1
@@ -32,18 +35,23 @@ fi
 if ! command_exists ntpd; then
     yum -y install ntp > /dev/null 2>&1
 fi
+
+export PATH=$PATH:$basepath/tools
+
+ssh_dir=/root/.ssh
+cert_dir=`cat $basepath/config/k8s.json |jq '.cert.dir'|sed 's/\"//g'`
+
 # ssh folder
-if [ ! -d /root/.ssh ]; then
-    mkdir -p /root/.ssh
+if [ ! -d $ssh_dir ]; then
+    mkdir -p $ssh_dir
 fi
+
 # ssl folder
-if [ ! -d /ssl ]; then
-    mkdir -p /ssl
+if [ ! -d $cert_dir ]; then
+    mkdir -p $cert_dir
 fi
 
 #check config
-export PATH=$PATH:$basepath/tools
-
 k8s_node_names=`cat $basepath/config/k8s.json |jq '.k8s.nodes[].name'|sed 's/\"//g'`
 k8s_node_ips=`cat $basepath/config/k8s.json |jq '.k8s.nodes[].ip'|sed 's/\"//g'`
 

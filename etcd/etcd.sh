@@ -25,14 +25,17 @@ done
 etcd_cluster=`echo $etcd_node_names $etcd_node_ips|awk '{for (i = 1; i < NF/2; i++) printf("%s=https://%s:2380,",$i,$(i+NF/2));printf("%s=https://%s:2380",$i,$(i+NF/2))}'`
 etcd_endpoints=`echo $etcd_node_ips|awk '{for (i = 1; i < NF; i++) printf("https://%s:2379,",$i);printf("https://%s:2379",$NF)}'`
 
+cert_dir=`cat $basepath/config/k8s.json |jq '.cert.dir'|sed 's/\"//g'`
+
 # Create etcd.conf, etcd.service
 user=etcd
 name=etcd
 data=/var/lib/etcd
 exefile=/usr/bin/etcd
-ca=/ssl/ca.pem
-cert=/ssl/etcd.pem
-certkey=/ssl/etcd-key.pem
+ca=$cert_dir/ca.pem
+cert=$cert_dir/etcd.pem
+certkey=$cert_dir/etcd-key.pem
+certcsr=$cert_dir/etcd.csr
 conf=/etc/etcd/etcd.conf
 service=/usr/lib/systemd/system/etcd.service
 
@@ -57,7 +60,7 @@ fi
 # check workdir
 if [ ! -d "$data" ]; then
     mkdir -p $data
-    for p in $data $exefile $cert $certkey ${conf%/*}; do
+    for p in $data $exefile $cert $certkey $certcsr ${conf%/*}; do
         chown -R $user:$user $p
     done
 fi
