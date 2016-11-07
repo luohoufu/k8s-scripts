@@ -30,14 +30,17 @@ done
 etcd_node_ips=`cat $basepath/config/k8s.json |jq '.etcd.nodes[].ip'|sed 's/\"//g'`
 etcd_endpoints=`echo $etcd_node_ips|awk '{for (i = 1; i < NF; i++) printf("https://%s:2379,",$i);printf("https://%s:2379",$NF)}'`
 
-# Create etcd.conf, etcd.service
+cert_dir=`cat $basepath/config/k8s.json |jq '.cert.dir'|sed 's/\"//g'`
+
+# Create kube-apiserver.conf, kube-apiserver.service
 user=kube
 name=kube-apiserver
-exefile=/usr/bin/flanneld
-ca=/ssl/ca.pem
-cert=/ssl/server.pem
-certkey=/ssl/server-key.pem
-certcsr=/ssl/server.csr
+exefile=/usr/bin/kube-apiserver
+data=/var/log/k8s/apiserver
+ca=$cert_dir/ca.pem
+cert=$cert_dir/server.pem
+certkey=$cert_dir/server-key.pem
+certcsr=$cert_dir/server.csr
 conf=/etc/kubernetes/apiserver.conf
 service=/usr/lib/systemd/system/kube-apiserver.service
 
@@ -141,8 +144,12 @@ cat <<EOF >$service
 [Unit]
 Description=Kubernetes API Server
 Documentation=https://github.com/kubernetes/kubernetes
+After=network.target
+After=etcd.service
 
 [Service]
+Type=notify
+User=${user}
 EnvironmentFile=-${conf}
 ExecStart=/usr/bin/kube-apiserver ${KUBE_APISERVER_OPTS}
 Restart=on-failure

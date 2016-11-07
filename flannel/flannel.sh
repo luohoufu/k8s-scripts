@@ -25,6 +25,7 @@ cert_dir=`cat $basepath/config/k8s.json |jq '.cert.dir'|sed 's/\"//g'`
 # Create flanneld.conf, flanneld.service
 name=flanneld
 exefile=/usr/bin/flanneld
+data=/var/log/flanneld/
 ca=$cert_dir/ca.pem
 cert=$cert_dir/flanneld.pem
 certkey=$cert_dir/flanneld-key.pem
@@ -41,6 +42,11 @@ fi
 # check confdir
 if [ ! -d "${conf%/*}" ]; then
      mkdir -p ${conf%/*}
+fi
+
+# check datadir
+if [ ! -d $data ]; then
+     mkdir -p $data
 fi
 
 # check iface
