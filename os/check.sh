@@ -80,13 +80,13 @@ fi
 # check firewall & iptables
 if [ $(ps -ef |grep "firewalld" |grep -v "grep" |wc -l) -gt 0 ]; then
     echo "setting disable firewalld......"
-    systemctl stop firewalld
-    systemctl disable firewalld
+    systemctl stop firewalld > /dev/null 2>&1
+    systemctl disable firewalld > /dev/null 2>&1
     echo "......done"
 fi
-if [ $(ps -ef |grep "iptables" |grep -v "grep"|grep -v "kube" |wc -l) -gt 0 ]; then
+if [ $(ps -ef |grep "iptables" |grep -v "grep\|kube" |wc -l) -gt 0 ]; then
     echo "setting disable iptables-services......"
-    systemctl stop iptables
-    systemctl disable iptables
+    systemctl stop iptables > /dev/null 2>&1
+    systemctl disable iptables > /dev/null 2>&1
     echo "......done"
 fi
