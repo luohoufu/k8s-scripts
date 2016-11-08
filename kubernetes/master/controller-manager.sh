@@ -56,7 +56,7 @@ KUBE_LOGDIR="--log_dir=${data}"
 KUBE_LOG_LEVEL="--v=4"
 KUBE_MASTER="--master=127.0.0.1:8080"
 KUBE_NODE_CIDRS="--allocate-node-cidrs=true"
-KUBE_CLUSTER_CIDR="--cluster-cidr==${service_cluster_ip_range}"
+KUBE_CLUSTER_CIDR="--cluster-cidr=${service_cluster_ip_range}"
 
 # --root-ca-file="": If set, this root certificate authority will be included in
 # service account's token secret. This must be a valid PEM-encoded CA bundle.
