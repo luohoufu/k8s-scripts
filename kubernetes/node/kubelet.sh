@@ -82,7 +82,7 @@ KUBE_ALLOW_PRIV="--allow-privileged=false"
 KUBE_POD_INFRA="--pod-infra-container-image=registry.access.redhat.com/rhel7/pod-infrastructure:latest"
 
 # Add your own!
-KUBELET_ARGS=""
+KUBELET_ARGS="--tls-cert-file=${cert} --tls-private-key-file=${certkey}"
 EOF
 
 KUBELET_OPTS="  \${KUBE_LOGTOSTDERR}     \\
