@@ -16,6 +16,12 @@ if [[ ! `id -u` -eq 0 ]]; then
 # check config
 bash $basepath/os/check.sh
 
+# excute flannel shell
+bash $basepath/flannel/flannel.sh
+
+# excute docker shell
+bash $basepath/docker/docker.sh
+
 # excute master service shell
 for s in kubecfg proxy kubelet; do
     bash $basepath/kubernetes/node/$s.sh
