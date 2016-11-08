@@ -84,7 +84,7 @@ if [ $(ps -ef |grep "firewalld" |grep -v "grep" |wc -l) -gt 0 ]; then
     systemctl disable firewalld
     echo "......done"
 fi
-if [ $(ps -ef |grep "iptables" |grep -v "grep" |wc -l) -gt 0 ]; then
+if [ $(ps -ef |grep "iptables" |grep -v "grep"|grep -v "kube" |wc -l) -gt 0 ]; then
     echo "setting disable iptables-services......"
     systemctl stop iptables
     systemctl disable iptables
