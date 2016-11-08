@@ -38,6 +38,7 @@ ca=$cert_dir/ca.pem
 cert=$cert_dir/client.pem
 certkey=$cert_dir/client-key.pem
 certcsr=$cert_dir/client.csr
+cfg=/etc/kubernetes/kubecfg
 conf=/etc/kubernetes/proxy.conf
 service=/usr/lib/systemd/system/kube-proxy.service
 

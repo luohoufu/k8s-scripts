@@ -95,7 +95,7 @@ KUBELET_OPTS="  \${KUBE_LOGTOSTDERR}     \\
                 \${KUBE_REQUIRE_CONFIG}  \\
                 \${KUBE_POD_INFRA}       \\
                 \${KUBE_ALLOW_PRIV}      \\
-                \${KUBELET_ARGS}"
+                \$KUBELET_ARGS"
 
 cat <<EOF >$service
 [Unit]
