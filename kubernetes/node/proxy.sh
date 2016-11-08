@@ -82,10 +82,6 @@ NODE_HOSTNAME="--hostname-override=${node_ip}"
 # --api-servers will be used for the location unless --require-kubeconfig is set. (default "/var/lib/kubelet/kubeconfig")
 KUBE_CONFIG="--kubeconfig=${cfg}"
 
-# --require-kubeconfig="": If true the Kubelet will exit if there are configuration errors, 
-# and will ignore the value of --api-servers in favor of the server defined in the kubeconfig file.
-KUBE_REQUIRE_CONFIG="--require-kubeconfig=true"
-
 #--proxy-mode="": Which proxy mode to use: 'userspace' (older) or 'iptables' (faster).
 KUBE_PROXY_MODE="--proxy-mode=iptables"
 EOF
@@ -95,7 +91,6 @@ KUBE_PROXY_OPTS="   \${KUBE_LOGTOSTDERR}       \\
                     \${KUBE_LOG_LEVEL}         \\
                     \${NODE_HOSTNAME}          \\
                     \${KUBE_CONFIG}            \\
-                    \${KUBE_REQUIRE_CONFIG}    \\
                     \${KUBE_PROXY_MODE}"
 cat <<EOF >$service
 [Unit]
