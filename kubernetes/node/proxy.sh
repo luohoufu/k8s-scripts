@@ -80,7 +80,7 @@ NODE_HOSTNAME="--hostname-override=${node_ip}"
 
 # --kubeconfig="": Path to a kubeconfig file, specifying how to connect to the API server. 
 # --api-servers will be used for the location unless --require-kubeconfig is set. (default "/var/lib/kubelet/kubeconfig")
-KUBELET_CONFIG="--kubeconfig=${cfg}"
+KUBE_CONFIG="--kubeconfig=${cfg}"
 
 # --require-kubeconfig="": If true the Kubelet will exit if there are configuration errors, 
 # and will ignore the value of --api-servers in favor of the server defined in the kubeconfig file.
