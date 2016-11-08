@@ -109,7 +109,7 @@ KUBE_SERVICE_ADDRESSES="--service-cluster-ip-range=${service_cluster_ip_range}"
 #   LimitRanger, AlwaysDeny, SecurityContextDeny, NamespaceExists, 
 #   NamespaceLifecycle, NamespaceAutoProvision,
 #   AlwaysAdmit, ServiceAccount, ResourceQuota, DefaultStorageClass
-KUBE_ADMISSION_CONTROL="--admission-control=ServiceAccount"
+KUBE_ADMISSION_CONTROL="--admission-control=NamespaceLifecycle,NamespaceExists,LimitRanger,SecurityContextDeny,ServiceAccount,ResourceQuota"
 
 # --client-ca-file="": If set, any request presenting a client certificate signed
 # by one of the authorities in the client-ca-file is authenticated with an identity
