@@ -48,7 +48,7 @@ spec:
             port: 9090
           initialDelaySeconds: 30
           timeoutSeconds: 30
-        volumes:
-        - name: "config"
+      volumes:
+      - name: "config"
         hostPath:
           path: "/etc/kubernetes"
