@@ -21,6 +21,7 @@ spec:
     spec:
       containers:
         - image: registry_url/heapster:v1.1.0
+          imagePullPolicy: IfNotPresent
           name: heapster
           resources:
             # keep request = limit to keep this container in guaranteed class
@@ -34,6 +35,7 @@ spec:
             - /heapster
             - --source=kubernetes.summary_api:''
         - image: registry_url/addon-resizer:v1.0
+          imagePullPolicy: IfNotPresent
           name: heapster-nanny
           resources:
             limits:

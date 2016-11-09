@@ -22,6 +22,7 @@ spec:
       containers:
       - name: kubernetes-dashboard
         image: registy_url/kubernetes-dashboard-amd64:v1.4.1
+        imagePullPolicy: IfNotPresent
         resources:
           # keep request = limit to keep this container in guaranteed class
           limits:

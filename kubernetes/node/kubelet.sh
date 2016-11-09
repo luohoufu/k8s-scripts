@@ -10,6 +10,10 @@ command_exists() {
 
 export PATH=$PATH:$basepath/tools
 
+registry_ip=`cat $basepath/config/k8s.json |jq '.docker.registry.ip'|sed 's/\"//g'`
+registry_port=`cat $basepath/config/k8s.json |jq '.docker.registry.port'|sed 's/\"//g'`
+registry_url=$registry_ip":"$registry_port
+
 cert_dir=`cat $basepath/config/k8s.json |jq '.cert.dir'|sed 's/\"//g'`
 node_ip=`hostname -i`
 
@@ -79,7 +83,7 @@ KUBE_REQUIRE_CONFIG="--require-kubeconfig=true"
 KUBE_ALLOW_PRIV="--allow-privileged=false"
 
 # --pod-infra-container-image: The image whose network/ipc namespaces containers in each pod will use.
-KUBE_POD_INFRA="--pod-infra-container-image=registry.access.redhat.com/rhel7/pod-infrastructure:latest"
+KUBE_POD_INFRA="--pod-infra-container-image=${registry_url}/pause:latest"
 
 # Add your own!
 KUBELET_ARGS="--tls-cert-file=${cert} --tls-private-key-file=${certkey}"
