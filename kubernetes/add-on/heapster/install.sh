@@ -49,6 +49,5 @@ sed -i "s/registy_url/$registry_url/g" $basepath/kubernetes/add-on/dashboard/hea
 if [ $(kubectl get po --namespace=kube-system| grep heapster |wc -l) -eq 0 ]; then
     kubectl create -f $basepath/heapster-controller.yaml
     kubectl create -f $basepath/heapster-service.yaml
-    #kubectl delete rc kubernetes-heapster-v1.1.0 --namespace=kube-system
-    #kubectl delete services kubernetes-heapster --namespace=kube-system
+    #kubectl delete rc kubernetes-heapster-v1.1.0 --namespace=kube-system && kubectl delete services kubernetes-heapster --namespace=kube-system
 fi
