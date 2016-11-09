@@ -8,9 +8,9 @@ command_exists() {
     command -v "$@" > /dev/null 2>&1
 }
 
-rsa_path=/root/.ssh/id_rsa
 host_path=/root/.ssh/known_hosts
-check_path=/root/.ssh/sync
+check_path=/usr/bin/sync
+exe_dir=/usr/bin
 
 if [ -f $check_path ]; then
     echo "Do you want run $0 again? [Y]/n"
@@ -20,20 +20,12 @@ if [ -f $check_path ]; then
     fi
 fi
 
-echo "gernerate ssh files and copy to all nodes,please wait......"
-if [ ! -f $rsa_path ]; then
-    ssh-keygen -q -t rsa -N "" -f $rsa_path
-fi
+echo "sync execute files to all nodes,please wait......"
 
 #ssh with all nodes
 export PATH=$PATH:$basepath/tools
 
-k8s_registry_hostname="10.37.116.11"
-k8s_registry_username="root"
-k8s_registry_passwd="hello@1234"
-
-src_dir=/root/ftp/security/usr/bin/*
-dest_dir=/usr/bin
+k8s_registry_hostname=`cat $basepath/config/k8s.json |jq '.docker.registry.ip'|sed 's/\"//g'`
 
 # each node sync
 k8s_node_username=`cat $basepath/config/k8s.json |jq '.k8s.username'|sed 's/\"//g'`
@@ -51,11 +43,20 @@ for ((i=0;i<${#arr_k8s_node_names[@]};i++));do
                 continue
             fi
         fi
-        expect $basepath/os/expect/expect_ssh.sh $k8s_registry_hostname $k8s_registry_username $k8s_registry_passwd > /dev/null 2>&1
-        scp -r $k8s_registry_username@$k8s_registry_hostname:$src_dir $dest_dir
+        expect $basepath/os/expect/expect_ssh.sh $k8s_registry_hostname $k8s_node_username $k8s_node_passwd > /dev/null 2>&1
+        for f in etcd etcdctl flanneld kube-apiserver kube-controller-manager kubectl kube-dns kube-scheduler mk-docker-opts.sh; do
+            scp -r $k8s_node_username@$k8s_registry_hostname:$src_dir $dest_dir > /dev/null 2>&1
+        done        
     fi
     
-    for f in docker docker-containerd docker-containerd-ctr docker-containerd-shim dockerd docker-proxy docker-runc etcd etcdctl flanneld hyperkube kube-apiserver kube-controller-manager kubectl kube-dns kubelet kubemark kube-proxy kube-scheduler mk-docker-opts.sh; do
-        scp -r $dest_dir/$f $k8s_node_username@$k8s_node_hostname:$dest_dir
+    for f in docker docker-containerd docker-containerd-ctr docker-containerd-shim dockerd docker-proxy docker-runc etcd etcdctl flanneld kubelet kube-proxy mk-docker-opts.sh; do
+        scp -r $exe_dir/$f $k8s_node_username@$k8s_node_hostname:$exe_dir > /dev/null 2>&1
     done
 done
+
+# gernerate check_path
+if [ ! -f $check_path ]; then
+    touch $check_path
+fi
+
+echo "......done"
