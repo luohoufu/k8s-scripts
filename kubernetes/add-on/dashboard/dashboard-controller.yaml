@@ -38,9 +38,17 @@ spec:
         - containerPort: 9090
         args:
         -  --apiserver-host=https://127.0.0.1:6443
+        volumeMounts:
+        - name: "config"
+          mountPath: "/etc/kubernetes"
+          readOnly: true
         livenessProbe:
           httpGet:
             path: /
             port: 9090
           initialDelaySeconds: 30
           timeoutSeconds: 30
+        volumes:
+        - name: "config"
+        hostPath:
+          path: "/etc/kubernetes"
