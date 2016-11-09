@@ -49,9 +49,9 @@ sed -i "s/registy_url/$registry_url/" $basepath/kubernetes/add-on/dashboard/dash
 
 # you need docker pull images manual
 
+# check manual with kubectl get rc,svc,po --namespace=kube-system
 if [ $(kubectl get po --namespace=kube-system| grep dashboard |wc -l) -eq 0 ]; then
     kubectl create -f  $basepath/kubernetes/add-on/dashboard/dashboard-controller.yaml
     kubectl create -f  $basepath/kubernetes/add-on/dashboard/dashboard-service.yaml
-    #kubectl delete rc kubernetes-dashboard-v1.4.0 --namespace=kube-system
-    #kubectl delete services kubernetes-dashboard --namespace=kube-system
+    #kubectl delete rc kubernetes-dashboard-v1.4.1 --namespace=kube-system && kubectl delete services kubernetes-dashboard --namespace=kube-system
 fi
