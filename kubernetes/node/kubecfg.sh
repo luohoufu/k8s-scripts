@@ -36,8 +36,8 @@ certkey=$cert_dir/client-key.pem
 certcsr=$cert_dir/client.csr
 conf=/etc/kubernetes/kubecfg
 
-cert_base64=`cat $cert |base64|awk '{printf("%s"),$0}'`
-certkey_base64=`cat $certkey |base64|awk '{printf("%s"),$0}'`
+#cert_base64=`cat $cert |base64|awk '{printf("%s"),$0}'`
+#certkey_base64=`cat $certkey |base64|awk '{printf("%s"),$0}'`
 
 # check confdir
 if [ ! -d "${conf%/*}" ]; then
@@ -50,12 +50,12 @@ kind: Config
 users:
 - name: kubelet
   user:
-    client-certificate-data: ${cert_base64}
-    client-key-data: ${certkey_base64}
+    client-certificate: ${cert}
+    client-key: ${certkey}
 clusters:
 - name: dev
   cluster:
-    insecure-skip-tls-verify: true
+    certificate-authority: ${ca}
     server: https://${k8s_master}:6443
 contexts:
 - context:
