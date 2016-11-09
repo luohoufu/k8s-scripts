@@ -39,6 +39,9 @@ spec:
         args:
         -  --apiserver-host=https://127.0.0.1:6443
         volumeMounts:
+        - name: "etcpki"
+          mountPath: "/etc/pki"
+          readOnly: true
         - name: "config"
           mountPath: "/etc/kubernetes"
           readOnly: true
@@ -49,6 +52,9 @@ spec:
           initialDelaySeconds: 30
           timeoutSeconds: 30
       volumes:
+      - name: "etcpki"
+        hostPath:
+          path: "/etc/pki"
       - name: "config"
         hostPath:
           path: "/etc/kubernetes"
