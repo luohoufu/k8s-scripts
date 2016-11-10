@@ -51,16 +51,16 @@ for ((i=0;i<${#arr_k8s_node_names[@]};i++));do
                 expect $basepath/os/expect/expect_ssh.sh $k8s_registry_hostname $k8s_node_username $k8s_node_passwd > /dev/null 2>&1
             fi
         fi
-        if [ ! -f $usr_bin/etcd ];then
-            for f in etcd etcdctl flanneld kube-apiserver kube-controller-manager kubectl kube-dns kube-scheduler mk-docker-opts.sh; do
+        for f in docker docker-containerd docker-containerd-ctr docker-containerd-shim dockerd docker-proxy docker-runc etcd etcdctl flanneld kube-apiserver kube-controller-manager kubectl kube-dns kube-scheduler kubelet kube-proxy mk-docker-opts.sh; do
+            if [ ! -f $usr_bin/$f ];then
                 scp -r $k8s_node_username@$k8s_registry_hostname:$usr_bin/$f $usr_bin > /dev/null 2>&1
-            done        
-        fi
+            fi
+         done
         continue
     fi
     
     for f in docker docker-containerd docker-containerd-ctr docker-containerd-shim dockerd docker-proxy docker-runc etcd etcdctl flanneld kubelet kube-proxy mk-docker-opts.sh; do
-        if [ -f $usr_bin/etcd ];then
+        if [ -f $usr_bin/$f ];then
             scp -r $usr_bin/$f $k8s_node_username@$k8s_node_hostname:$usr_bin > /dev/null 2>&1
         fi
     done
