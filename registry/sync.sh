@@ -11,7 +11,7 @@ if ! grep -q "master" /etc/hostname ; then
 fi
 
 host_path=/root/.ssh/known_hosts
-check_path=/usr/bin/sync
+check_path=/tmp/sync
 exe_dir=/usr/bin
 
 if [ -f $check_path ]; then
