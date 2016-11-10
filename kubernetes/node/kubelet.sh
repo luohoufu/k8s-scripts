@@ -114,8 +114,6 @@ After=network.target
 After=docker.service
 
 [Service]
-Type=notify
-User=${user}
 EnvironmentFile=-${conf}
 ExecStart=/usr/bin/kubelet ${KUBELET_OPTS}
 Restart=on-failure

@@ -157,8 +157,6 @@ After=network.target
 After=etcd.service
 
 [Service]
-Type=notify
-User=${user}
 EnvironmentFile=-${conf}
 ExecStart=/usr/bin/kube-apiserver ${KUBE_APISERVER_OPTS}
 Restart=on-failure

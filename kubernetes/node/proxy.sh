@@ -105,8 +105,6 @@ After=network.target
 After=docker.service
 
 [Service]
-Type=notify
-User=${user}
 EnvironmentFile=-${conf}
 ExecStart=/usr/bin/kube-proxy ${KUBE_PROXY_OPTS}
 Restart=on-failure
