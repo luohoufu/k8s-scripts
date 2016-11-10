@@ -32,7 +32,7 @@ fi
 
 # check user
 if ! grep -q $user /etc/passwd; then
-    useradd -c "$name user"  -d $data -M -r -s /sbin/nologin $user
+    useradd -c "${name:0:4} user"  -d ${adata%/*/*} -M -r -s /sbin/nologin $user
 fi
 
 # check confdir

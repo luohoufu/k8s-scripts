@@ -62,11 +62,3 @@ if [[ $(uname -r |cut -c1) -eq 4 && $(rpm -qa | grep kernel|grep -v "4.8"|wc -l)
     done
     echo "......done"
 fi
-
-# rebooting system
-echo "You must reboot system,Do You Want Reboot System Now? [Y]/n"
-read confirm
-if [[ ! "${confirm}" =~ ^[nN]$ ]]; then
-    echo "Rebooting Now......"
-    shutdown -r now
-fi
