@@ -16,7 +16,6 @@ workdir=/tmp
 check_path=$cert_dir/sync
 
 if [ -f $check_path ]; then
-
     echo "Do you want run $0 again? [Y]/n"
     read confirm
     if [[ "${confirm}" =~ ^[nN]$ ]]; then
@@ -28,6 +27,8 @@ echo "gernerate ssl files and copy to all nodes,please wait......"
 if [ ! -d $cert_dir ]; then
     mkdir -p $cert_dir
 fi
+
+bash $basepath/kubernetes/certs/make-ca-certs.sh
 
 echo $ca_csr > $workdir/ca-csr.json
 echo $ca_cfg > $workdir/ca-config.json
