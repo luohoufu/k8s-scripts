@@ -48,7 +48,7 @@ if [[ -n "${extra_sans}" ]]; then
   sans="${sans},${extra_sans}"
 fi
 
-echo "gernerate ssl files and copy to all nodes,please wait......"
+echo "gernerate k8s ssl files and copy to all nodes,please wait......"
 
 tmpdir=$(mktemp -d -t kubernetes_cacert.XXXXXX)
 trap 'rm -rf "${tmpdir}"' EXIT
