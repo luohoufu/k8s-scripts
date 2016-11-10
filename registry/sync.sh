@@ -5,6 +5,12 @@ set -e -o pipefail -o errtrace -o functrace
 
 basepath=$(cd `dirname $0`;cd ..; pwd)
 
+# check run user
+if [[ ! `id -u` -eq 0 ]]; then
+    echo "Please run this shell by root user!"
+    exit 1;
+fi
+
 if ! grep -q "master" /etc/hostname ; then
     echo "ERROR: This shell must run on master node!"
     exit 1
@@ -41,18 +47,22 @@ for ((i=0;i<${#arr_k8s_node_names[@]};i++));do
     k8s_node_hostname=${arr_k8s_node_names[$i]}
     if echo $k8s_node_hostname|grep -q "master"; then
         if [ -f $host_path ]; then
-            if grep -wq "$k8s_registry_hostname" $host_path; then
-                continue
+            if ! grep -wq "$k8s_registry_hostname" $host_path; then
+                expect $basepath/os/expect/expect_ssh.sh $k8s_registry_hostname $k8s_node_username $k8s_node_passwd > /dev/null 2>&1
             fi
         fi
-        expect $basepath/os/expect/expect_ssh.sh $k8s_registry_hostname $k8s_node_username $k8s_node_passwd > /dev/null 2>&1
-        for f in etcd etcdctl flanneld kube-apiserver kube-controller-manager kubectl kube-dns kube-scheduler mk-docker-opts.sh; do
-            scp -r $k8s_node_username@$k8s_registry_hostname:$src_dir $dest_dir > /dev/null 2>&1
-        done        
+        if [ ! -f $dest_dir/etcd ];then
+            for f in etcd etcdctl flanneld kube-apiserver kube-controller-manager kubectl kube-dns kube-scheduler mk-docker-opts.sh; do
+                scp -r $k8s_node_username@$k8s_registry_hostname:$dest_dir $dest_dir > /dev/null 2>&1
+            done        
+        fi
+        continue
     fi
     
     for f in docker docker-containerd docker-containerd-ctr docker-containerd-shim dockerd docker-proxy docker-runc etcd etcdctl flanneld kubelet kube-proxy mk-docker-opts.sh; do
-        scp -r $exe_dir/$f $k8s_node_username@$k8s_node_hostname:$exe_dir > /dev/null 2>&1
+        if [ ! -f $dest_dir/etcd ];then
+            scp -r $exe_dir/$f $k8s_node_username@$k8s_node_hostname:$exe_dir > /dev/null 2>&1
+        fi
     done
 done
 

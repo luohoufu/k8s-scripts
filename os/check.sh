@@ -9,9 +9,9 @@ command_exists() {
 }
 # check run user
 if [[ ! `id -u` -eq 0 ]]; then
-     echo "Please run this shell by root user!"
-     exit 1;
- fi
+    echo "Please run this shell by root user!"
+    exit 1;
+fi
 
 # add execute permission
  for f in $basepath/tools/*;do
