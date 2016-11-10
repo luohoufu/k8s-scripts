@@ -4,9 +4,6 @@
 set -e -o pipefail -o errtrace -o functrace
 
 basepath=$(cd `dirname $0`;cd ..; pwd)
-command_exists() {
-    command -v "$@" > /dev/null 2>&1
-}
 
 # setting core fix
 if grep -wq "ip6tables" /etc/sysctl.conf ; then

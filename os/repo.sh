@@ -4,9 +4,6 @@
 set -e -o pipefail -o errtrace -o functrace
 
 basepath=$(cd `dirname $0`;cd ..; pwd)
-command_exists() {
-     command -v "$@" > /dev/null 2>&1
-}
 
 if grep -q "aliyun"  /etc/yum.repos.d/CentOS-Base.repo ; then
     exit 0

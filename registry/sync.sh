@@ -4,9 +4,11 @@
 set -e -o pipefail -o errtrace -o functrace
 
 basepath=$(cd `dirname $0`;cd ..; pwd)
-command_exists() {
-    command -v "$@" > /dev/null 2>&1
-}
+
+if ! grep -q "master" /etc/hostname ; then
+    echo "ERROR: This shell must run on master node!"
+    exit 1
+fi
 
 host_path=/root/.ssh/known_hosts
 check_path=/usr/bin/sync
