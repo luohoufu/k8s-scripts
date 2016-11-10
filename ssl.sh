@@ -21,15 +21,9 @@ fi
 # check config
 bash $basepath/os/check.sh
 
-# excute flannel shell (master need access pods network,e.g. )
-bash $basepath/flannel/flannel.sh
-
-# excute flannel shell (master need access pods network,e.g. )
-bash $basepath/flannel/flannel.sh
-
-# excute master service shell
-for s in apiserver controller-manager scheduler; do
-    bash $basepath/kubernetes/master/$s.sh
+# execute shell file
+for s in ssh ssl os; do
+    bash $basepath/os/$s.sh
 done
 
 # rebooting system
