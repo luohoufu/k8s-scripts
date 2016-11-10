@@ -37,9 +37,15 @@ user=kube
 name=kube-apiserver
 exefile=/usr/bin/kube-apiserver
 data=/var/log/k8s/apiserver/
+
+etcdca=$cert_dir/etcdca.pem
+etcdcert=$cert_dir/etcd.pem
+etcdcertkey=$cert_dir/etcd-key.pem
+
 ca=$cert_dir/k8sca.pem
 cert=$cert_dir/server.pem
 certkey=$cert_dir/server-key.pem
+
 conf=/etc/kubernetes/apiserver.conf
 service=/usr/lib/systemd/system/kube-apiserver.service
 
@@ -81,9 +87,9 @@ KUBE_LOG_LEVEL="--v=4"
 # --etcd-servers=[]: List of etcd servers to watch (http://ip:port), 
 # comma separated. Mutually exclusive with -etcd-config
 KUBE_ETCD_SERVERS="--etcd-servers=${etcd_endpoints}"
-KUBE_ETCD_CAFILE="--etcd-cafile=${ca}"
-KUBE_ETCD_CERTFILE="--etcd-certfile=${cert}"
-KUBE_ETCD_KEYFILE="--etcd-keyfile=${certkey}"
+KUBE_ETCD_CAFILE="--etcd-cafile=${etcdca}"
+KUBE_ETCD_CERTFILE="--etcd-certfile=${etcdcert}"
+KUBE_ETCD_KEYFILE="--etcd-keyfile=${etcdcertkey}"
 
 # --insecure-bind-address=127.0.0.1: The IP address on which to serve the --insecure-port.
 KUBE_API_ADDRESS="--bind-address=${k8s_master}"

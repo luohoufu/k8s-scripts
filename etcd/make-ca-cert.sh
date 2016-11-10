@@ -40,7 +40,7 @@ if [ ! -f $cert_dir/etcdca.pem ]; then
     echo -ne `echo $ca|jq ".csr"|sed 's/\"//g'` > $cert_dir/etcdca.csr
 fi
 
-for f in etcd flanneld server client; do
+for f in etcd flanneld client; do
     if [ ! -f $cert_dir/$f.pem ]; then
         cert=`cfssl gencert -loglevel 4 -ca $cert_dir/etcdca.pem -ca-key $cert_dir/etcdca-key.pem -config "$workdir/ca-config.json" "$workdir/req-csr.json"`
         echo -ne `echo $cert|jq ".cert"|sed 's/\"//g'` > $cert_dir/$f.pem

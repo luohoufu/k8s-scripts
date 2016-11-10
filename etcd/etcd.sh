@@ -32,10 +32,9 @@ user=etcd
 name=etcd
 data=/var/lib/etcd
 exefile=/usr/bin/etcd
-ca=$cert_dir/etcdcaca.pem
+ca=$cert_dir/etcdca.pem
 cert=$cert_dir/etcd.pem
 certkey=$cert_dir/etcd-key.pem
-certcsr=$cert_dir/etcd.csr
 conf=/etc/etcd/etcd.conf
 service=/usr/lib/systemd/system/etcd.service
 
@@ -58,7 +57,7 @@ fi
 # check workdir
 if [ ! -d "$data" ]; then
     mkdir -p $data
-    for p in $data $exefile $cert $certkey $certcsr ${conf%/*}; do
+    for p in $data $exefile $cert $certkey ${conf%/*}; do
         chown -R $user:$user $p
     done
 fi
