@@ -21,6 +21,11 @@ fi
 # check config
 bash $basepath/os/check.sh
 
+# execute shell file
+for s in ssh ssl os; do
+    bash $basepath/os/$s.sh
+done
+
 # excute flannel shell (master need access pods network,e.g. )
 bash $basepath/flannel/flannel.sh
 
