@@ -16,6 +16,6 @@ if [ -f $check_path ]; then
 fi
 
 master_ip=`hostname -i`
-bash $basepath/kubernetes/certs/make-ca-certs.sh "$master_ip" "IP:$master_ip,IP:172.16.0.1,DNS:kubernetes,DNS:kubernetes.default,DNS:kubernetes.default.svc,DNS:kubernetes.default.svc.cluster.dev"
+bash $basepath/kubernetes/certs/make-ca-cert.sh "$master_ip" "IP:$master_ip,IP:172.16.0.1,DNS:kubernetes,DNS:kubernetes.default,DNS:kubernetes.default.svc,DNS:kubernetes.default.svc.cluster.dev"
 
-bash $basepath/etcd/make-ca-certs.sh
+bash $basepath/etcd/make-ca-cert.sh
