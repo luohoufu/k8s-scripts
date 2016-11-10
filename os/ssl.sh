@@ -28,7 +28,8 @@ if [ ! -d $cert_dir ]; then
     mkdir -p $cert_dir
 fi
 
-bash $basepath/kubernetes/certs/make-ca-certs.sh
+master_ip=`hostname -i`
+bash $basepath/kubernetes/certs/make-ca-certs.sh "$master_ip" "IP:$master_ip,IP:172.16.0.1,DNS:kubernetes,DNS:kubernetes.default,DNS:kubernetes.default.svc,DNS:kubernetes.default.svc.cluster.dev"
 
 echo $ca_csr > $workdir/ca-csr.json
 echo $ca_cfg > $workdir/ca-config.json
