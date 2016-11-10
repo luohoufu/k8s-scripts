@@ -22,10 +22,9 @@ user=kube
 name=kubelet
 exefile=/usr/bin/kubelet
 data=/var/log/k8s/kubelet/
-ca=$cert_dir/ca.pem
-cert=$cert_dir/server.pem
-certkey=$cert_dir/server-key.pem
-certcsr=$cert_dir/server.csr
+ca=$cert_dir/k8sca.pem
+cert=$cert_dir/kubecfg.pem
+certkey=$cert_dir/kubecfg-key.pem
 cfg=/etc/kubernetes/kubecfg
 conf=/etc/kubernetes/kubelet.conf
 service=/usr/lib/systemd/system/kubelet.service
@@ -49,7 +48,7 @@ fi
 # check workdir
 if [ ! -d "$data" ]; then
     mkdir -p $data
-    for p in $data $exefile $cert $certkey $certcsr $cfg ${conf%/*}; do
+    for p in $data $exefile $cert $certkey $cfg ${conf%/*}; do
         chown -R $user:$user $p
     done
 fi

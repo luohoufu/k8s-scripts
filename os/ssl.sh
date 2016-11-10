@@ -34,11 +34,11 @@ echo $ca_cfg > $workdir/ca-config.json
 echo $req_csr > $workdir/req-csr.json
 
 # ssl with all nodes
-if [ ! -f $cert_dir/ca.pem ]; then
+if [ ! -f $cert_dir/etcdca.pem ]; then
     ca=`cfssl gencert -loglevel 4 -initca "$workdir/ca-csr.json"`
-    echo -ne `echo $ca|jq ".cert"|sed 's/\"//g'` > $cert_dir/ca.pem
-    echo -ne `echo $ca|jq ".key"|sed 's/\"//g'` > $cert_dir/ca-key.pem
-    echo -ne `echo $ca|jq ".csr"|sed 's/\"//g'` > $cert_dir/ca.csr
+    echo -ne `echo $ca|jq ".cert"|sed 's/\"//g'` > $cert_dir/etcdca.pem
+    echo -ne `echo $ca|jq ".key"|sed 's/\"//g'` > $cert_dir/etcdca-key.pem
+    echo -ne `echo $ca|jq ".csr"|sed 's/\"//g'` > $cert_dir/etcdca.csr
 fi
 
 for f in etcd flanneld server client; do

@@ -73,6 +73,6 @@ cp -p pki/issued/kubecfg.crt "${cert_dir}/kubecfg.pem"
 cp -p pki/private/kubecfg.key "${cert_dir}/kubecfg-key.pem"
 # Make server certs accessible to apiserver.
 chgrp $cert_group "${cert_dir}/server-key.pem" "${cert_dir}/server.pem" "${cert_dir}/k8sca.pem"
-chmod 660 "${cert_dir}/server-key.pem" "${cert_dir}/server.pem" "${cert_dir}/ca.crt"
+chmod 660 "${cert_dir}/server-key.pem" "${cert_dir}/server.pem" "${cert_dir}/k8sca.pem"
 
 echo "......done"

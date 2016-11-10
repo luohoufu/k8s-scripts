@@ -35,10 +35,9 @@ user=kube
 name=kube-proxy
 exefile=/usr/bin/kube-proxy
 data=/var/log/k8s/proxy/
-ca=$cert_dir/ca.pem
-cert=$cert_dir/client.pem
-certkey=$cert_dir/client-key.pem
-certcsr=$cert_dir/client.csr
+ca=$cert_dir/k8sca.pem
+cert=$cert_dir/kubecfg.pem
+certkey=$cert_dir/kubecfg-key.pem
 cfg=/etc/kubernetes/kubecfg
 conf=/etc/kubernetes/proxy.conf
 service=/usr/lib/systemd/system/kube-proxy.service
@@ -62,7 +61,7 @@ fi
 # check workdir
 if [ ! -d "$data" ]; then
     mkdir -p $data
-    for p in $data $exefile $cert $certkey $certcsr ${conf%/*}; do
+    for p in $data $exefile $cert $certkey ${conf%/*}; do
         chown -R $user:$user $p
     done
 fi

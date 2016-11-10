@@ -18,10 +18,9 @@ user=kube
 name=kube-controller-manager
 exefile=/usr/bin/kube-controller-manager
 data=/var/log/k8s/controller-manager/
-ca=$cert_dir/ca.pem
+ca=$cert_dir/k8sca.pem
 cert=$cert_dir/server.pem
 certkey=$cert_dir/server-key.pem
-certcsr=$cert_dir/server.csr
 conf=/etc/kubernetes/controller-manager.conf
 service=/usr/lib/systemd/system/kube-controller-manager.service
 
@@ -44,7 +43,7 @@ fi
 # check workdir
 if [ ! -d "$data" ]; then
     mkdir -p $data
-    for p in $data $exefile $cert $certkey $certcsr ${conf%/*}; do
+    for p in $data $exefile $cert $certkey ${conf%/*}; do
         chown -R $user:$user $p
     done
 fi
