@@ -31,6 +31,7 @@ cert_dir=`cat $basepath/config/k8s.json |jq '.cert.dir'|sed 's/\"//g'`
 node_ip=`hostname -i`
 
 # Create kube-proxy.conf, kube-proxy.service
+user=kube
 name=kube-proxy
 exefile=/usr/bin/kube-proxy
 data=/var/log/k8s/proxy/
@@ -46,6 +47,11 @@ service=/usr/lib/systemd/system/kube-proxy.service
 if ! command_exists ${exefile##*/}; then
      echo "Please Copy `basename $exefile` to $exefile"
      exit 1;
+fi
+
+# check user
+if ! grep -q $user /etc/passwd; then
+    useradd -c "$name user"  -d $data -M -r -s /sbin/nologin $user
 fi
 
 # check confdir
@@ -100,6 +106,8 @@ After=network.target
 After=docker.service
 
 [Service]
+Type=notify
+User=${user}
 EnvironmentFile=-${conf}
 ExecStart=/usr/bin/kube-proxy ${KUBE_PROXY_OPTS}
 Restart=on-failure

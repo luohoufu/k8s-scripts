@@ -84,6 +84,8 @@ After=network.target
 After=kube-apiserver.service
 
 [Service]
+Type=notify
+User=${user}
 EnvironmentFile=-${conf}
 ExecStart=/usr/bin/kube-controller-manager ${KUBE_CONTROLLER_MANAGER_OPTS}
 Restart=on-failure
