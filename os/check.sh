@@ -82,9 +82,10 @@ if [ $ip_falg -ne 1 ]; then
 fi
 
 # setting sshd
-if [ -f /etc/ssh/sshd_config ]; then
-    if grep -q "GSSAPIAuthentication yes" /etc/selinux/config ; then
-        sed -i "s/GSSAPIAuthentication yes/GSSAPIAuthentication no/g" /etc/ssh/sshd_config
+sshd_conf=/etc/ssh/sshd_config
+if [ -f $sshd_conf ]; then
+    if grep -q "GSSAPIAuthentication yes" $sshd_conf ; then
+        sed -i "s/GSSAPIAuthentication yes/GSSAPIAuthentication no/g" $sshd_conf
     fi
 fi
 
