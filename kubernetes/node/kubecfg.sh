@@ -30,9 +30,9 @@ done
 
 cert_dir=`cat $basepath/config/k8s.json |jq '.cert.dir'|sed 's/\"//g'`
 
-ca=$cert_dir/k8sca.pem
-cert=$cert_dir/kubecfg.pem
-certkey=$cert_dir/kubecfg-key.pem
+ca=$cert_dir/ca.pem
+cert=$cert_dir/client.pem
+certkey=$cert_dir/client-key.pem
 conf=/etc/kubernetes/kubecfg
 
 # if you want use base64 data,that not need mount volumes in docker

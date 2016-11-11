@@ -68,11 +68,11 @@ cp -p pki/issued/kubernetes-master.crt "${cert_dir}/server.pem" > /dev/null 2>&1
 cp -p pki/private/kubernetes-master.key "${cert_dir}/server-key.pem" > /dev/null 2>&1
 
 ./easyrsa build-client-full kubecfg nopass > /dev/null 2>&1
-cp -p pki/ca.crt "${cert_dir}/k8sca.pem"
+cp -p pki/ca.crt "${cert_dir}/ca.pem"
 cp -p pki/issued/kubecfg.crt "${cert_dir}/kubecfg.pem"
 cp -p pki/private/kubecfg.key "${cert_dir}/kubecfg-key.pem"
 # Make server certs accessible to apiserver.
-chgrp $cert_group "${cert_dir}/server-key.pem" "${cert_dir}/server.pem" "${cert_dir}/k8sca.pem"
-chmod 660 "${cert_dir}/server-key.pem" "${cert_dir}/server.pem" "${cert_dir}/k8sca.pem"
+chgrp $cert_group "${cert_dir}/server-key.pem" "${cert_dir}/server.pem" "${cert_dir}/ca.pem"
+chmod 660 "${cert_dir}/server-key.pem" "${cert_dir}/server.pem" "${cert_dir}/ca.pem"
 
 echo "......done"

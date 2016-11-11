@@ -14,7 +14,8 @@ if [[ ! `id -u` -eq 0 ]]; then
 fi
 
 # update trust cat
-update-ca-trust
+update-ca-trust force-enable
+update-ca-trust extract
 
 # add execute permission
  for f in $basepath/tools/*;do

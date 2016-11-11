@@ -42,7 +42,7 @@ ca=$cert_dir/ca.pem
 etcdcert=$cert_dir/etcd.pem
 etcdcertkey=$cert_dir/etcd-key.pem
 
-ca=$cert_dir/k8sca.pem
+ca=$cert_dir/ca.pem
 cert=$cert_dir/server.pem
 certkey=$cert_dir/server-key.pem
 
