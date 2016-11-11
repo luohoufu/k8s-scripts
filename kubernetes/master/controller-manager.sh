@@ -50,12 +50,26 @@ fi
 
 # config file
 cat <<EOF >$conf
+# --logtostderr=true: log to standard error instead of files
 KUBE_LOGTOSTDERR="--logtostderr=false"
+
+# --log_dir= save log info by file
 KUBE_LOGDIR="--log_dir=${data}"
+
+# --v=0: log level for V logs
 KUBE_LOG_LEVEL="--v=4"
+
+# --master="": The address of the Kubernetes API server (overrides any value in kubeconfig)
 KUBE_MASTER="--master=127.0.0.1:8080"
-KUBE_NODE_CIDRS="--allocate-node-cidrs=true"
+
+# --allocate-node-cidrs: Should CIDRs for Pods be allocated and set on the cloud provider.
+KUBE_ALLOCATE_NODE_CIDR="--allocate-node-cidrs=true"
+
+# --cluster-cidr="" CIDR Range for Pods in cluster.
 KUBE_CLUSTER_CIDR="--cluster-cidr=${service_cluster_ip_range}"
+
+# --service-cluster-ip-range="" CIDR Range for Services in cluster.
+KUBE_SERVICE_CIDR="--service-cluster-ip-range=${service_cluster_ip_range}"
 
 # --root-ca-file="": If set, this root certificate authority will be included in
 # service account's token secret. This must be a valid PEM-encoded CA bundle.
@@ -70,8 +84,9 @@ KUBE_CONTROLLER_MANAGER_OPTS="  \${KUBE_LOGTOSTDERR}  \\
                                 \${KUBE_LOGDIR}       \\
                                 \${KUBE_LOG_LEVEL}    \\
                                 \${KUBE_MASTER}       \\
-                                \${KUBE_NODE_CIDRS}   \\
-                                \${KUBE_CLUSTER_CIDR} \\
+                                \${KUBE_CLUSTER_CIDR} \\                                
+                                \${KUBE_SERVICE_CIDR} \\
+                                \${KUBE_ALLOCATE_NODE_CIDR}   \\
                                 \${KUBE_CONTROLLER_MANAGER_ROOT_CA_FILE} \\
                                 \${KUBE_CONTROLLER_MANAGER_SERVICE_ACCOUNT_PRIVATE_KEY_FILE}"
 
