@@ -52,7 +52,7 @@ for f in etcd flanneld server client; do
     fi
 done
 
-k8s_node_username=`cat $basepath/config/k8s.json |jq '.host.passwd'|sed 's/\"//g'`
+k8s_node_username=`cat $basepath/config/k8s.json |jq '.host.uname'|sed 's/\"//g'`
 k8s_node_names=`cat $basepath/config/k8s.json |jq '.k8s.nodes[].name'|sed 's/\"//g'`
 
 arr_k8s_node_names=($(echo $k8s_node_names))

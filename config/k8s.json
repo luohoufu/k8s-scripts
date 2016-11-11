@@ -1,6 +1,6 @@
 {
     "host": {
-        "username": "root",
+        "uname": "root",
         "passwd": "hello@1234"
     },
     "cert": {
