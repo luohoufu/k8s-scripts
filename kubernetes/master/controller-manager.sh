@@ -11,7 +11,7 @@ command_exists() {
 export PATH=$PATH:$basepath/tools
 
 cert_dir=`cat $basepath/config/k8s.json |jq '.cert.dir'|sed 's/\"//g'`
-service_cluster_ip_range=`cat $basepath/config/k8s.json |jq '.k8s.svciprange'|sed 's/\"//g'`
+service_cluster_ip_range=`cat $basepath/config/k8s.json |jq '.k8s.iprange'|sed 's/\"//g'`
 
 # Create kube-controller-manager.conf, kube-controller-manager.service
 user=kube

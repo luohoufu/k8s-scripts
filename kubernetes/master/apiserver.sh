@@ -10,9 +10,9 @@ command_exists() {
 
 export PATH=$PATH:$basepath/tools
 
-service_cluster_ip_range=`cat $basepath/config/k8s.json |jq '.k8s.svciprange'|sed 's/\"//g'`
-k8s_node_username=`cat $basepath/config/k8s.json |jq '.k8s.username'|sed 's/\"//g'`
-k8s_node_passwd=`cat $basepath/config/k8s.json |jq '.k8s.passwd'|sed 's/\"//g'`
+service_cluster_ip_range=`cat $basepath/config/k8s.json |jq '.k8s.iprange'|sed 's/\"//g'`
+k8s_node_username=`cat $basepath/config/k8s.json |jq '.host.passwd'|sed 's/\"//g'`
+k8s_node_passwd=`cat $basepath/config/k8s.json |jq '.host.passwd'|sed 's/\"//g'`
 
 k8s_node_names=`cat $basepath/config/k8s.json |jq '.k8s.nodes[].name'|sed 's/\"//g'`
 k8s_node_ips=`cat $basepath/config/k8s.json |jq '.k8s.nodes[].ip'|sed 's/\"//g'`
@@ -38,7 +38,7 @@ name=kube-apiserver
 exefile=/usr/bin/kube-apiserver
 data=/var/log/k8s/apiserver/
 
-etcdca=$cert_dir/etcdca.pem
+ca=$cert_dir/ca.pem
 etcdcert=$cert_dir/etcd.pem
 etcdcertkey=$cert_dir/etcd-key.pem
 
@@ -87,7 +87,7 @@ KUBE_LOG_LEVEL="--v=4"
 # --etcd-servers=[]: List of etcd servers to watch (http://ip:port), 
 # comma separated. Mutually exclusive with -etcd-config
 KUBE_ETCD_SERVERS="--etcd-servers=${etcd_endpoints}"
-KUBE_ETCD_CAFILE="--etcd-cafile=${etcdca}"
+KUBE_ETCD_CAFILE="--etcd-cafile=${ca}"
 KUBE_ETCD_CERTFILE="--etcd-certfile=${etcdcert}"
 KUBE_ETCD_KEYFILE="--etcd-keyfile=${etcdcertkey}"
 

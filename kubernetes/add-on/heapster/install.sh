@@ -27,8 +27,8 @@ registry_ip=`cat $basepath/config/k8s.json |jq '.docker.registry.ip'|sed 's/\"//
 registry_port=`cat $basepath/config/k8s.json |jq '.docker.registry.port'|sed 's/\"//g'`
 registry_url=$registry_ip":"$registry_port
 
-k8s_node_username=`cat $basepath/config/k8s.json |jq '.k8s.username'|sed 's/\"//g'`
-k8s_node_passwd=`cat $basepath/config/k8s.json |jq '.k8s.passwd'|sed 's/\"//g'`
+k8s_node_username=`cat $basepath/config/k8s.json |jq '.host.passwd'|sed 's/\"//g'`
+k8s_node_passwd=`cat $basepath/config/k8s.json |jq '.host.passwd'|sed 's/\"//g'`
 
 k8s_node_names=`cat $basepath/config/k8s.json |jq '.k8s.nodes[].name'|sed 's/\"//g'`
 k8s_node_ips=`cat $basepath/config/k8s.json |jq '.k8s.nodes[].ip'|sed 's/\"//g'`

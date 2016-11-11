@@ -1,4 +1,8 @@
 {
+    "host":{
+        "username": "root",
+        "passwd": "hello@1234"        
+    },
     "cert": {
         "dir": "/ssl",
         "cacfg": {
@@ -15,7 +19,7 @@
             }
         },
         "cacsr": {
-            "CN": "K8S",
+            "CN": "K8S SECURITY ROOT CA",
             "key": {
                 "algo": "rsa",
                 "size": 2048
@@ -31,10 +35,15 @@
             ]
         },
         "reqcsr": {
-            "CN": "K8S",
+            "CN": "K8S SECURITY",
             "hosts": [
+                "kubernetes",
+                "kubernetes.default",
+                "kubernetes.default.svc",
+                "kubernetes.default.svc.cluster.dev",
                 "10.37.116.31",
                 "10.37.116.32",
+                "172.16.0.1",
                 "127.0.0.1"
             ],
             "key": {
@@ -66,7 +75,7 @@
         "iface": "eth0",
         "key": "/flannel/network/config",
         "value": {
-            "Network": "172.16.0.0/16",
+            "Network": "172.18.0.0/16",
             "SubnetLen": 25,
             "Backend": {
                 "Type": "vxlan",
@@ -75,26 +84,25 @@
         }
     },
     "docker": {
-        "registry": {
-            "name": "registry.dev",
+        "registry": {            
             "ip": "10.37.116.11",
-            "port": 8443
+            "port": 8443,
+            "data": "/opt"
         }
     },
     "k8s": {
         "nodes": [
             {
-                "name": "k8s-master",
+                "name": "k8s-master.dev",
                 "ip": "10.37.116.31"
             },
             {
-                "name": "k8s-node-1",
+                "name": "k8s-node-1.dev",
                 "ip": "10.37.116.32"
             }
         ],
-        "username": "root",
-        "passwd": "hello@1234",
-        "svciprange": "172.16.0.0/16",
+        "iprange": "172.16.0.0/16",
+        "dns": "10.37.116.31",
         "domain": "cluster.dev"
-    }
+    }    
 }

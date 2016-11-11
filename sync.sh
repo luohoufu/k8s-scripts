@@ -3,7 +3,7 @@
 
 set -e -o pipefail -o errtrace -o functrace
 
-basepath=$(cd `dirname $0`;cd ..; pwd)
+basepath=$(cd `dirname $0`; pwd)
 
 # check run user
 if [[ ! `id -u` -eq 0 ]]; then
@@ -36,8 +36,8 @@ export PATH=$PATH:$basepath/tools
 k8s_registry_hostname=`cat $basepath/config/k8s.json |jq '.docker.registry.ip'|sed 's/\"//g'`
 
 # each node sync
-k8s_node_username=`cat $basepath/config/k8s.json |jq '.k8s.username'|sed 's/\"//g'`
-k8s_node_passwd=`cat $basepath/config/k8s.json |jq '.k8s.passwd'|sed 's/\"//g'`
+k8s_node_username=`cat $basepath/config/k8s.json |jq '.host.passwd'|sed 's/\"//g'`
+k8s_node_passwd=`cat $basepath/config/k8s.json |jq '.host.passwd'|sed 's/\"//g'`
 
 k8s_node_names=`cat $basepath/config/k8s.json |jq '.k8s.nodes[].name'|sed 's/\"//g'`
 
@@ -51,7 +51,7 @@ for ((i=0;i<${#arr_k8s_node_names[@]};i++));do
                 expect $basepath/os/expect/expect_ssh.sh $k8s_registry_hostname $k8s_node_username $k8s_node_passwd > /dev/null 2>&1
             fi
         fi
-        for f in docker docker-containerd docker-containerd-ctr docker-containerd-shim dockerd docker-proxy docker-runc etcd etcdctl flanneld kube-apiserver kube-controller-manager kubectl kube-dns kube-scheduler kubelet kube-proxy mk-docker-opts.sh; do
+        for f in docker docker-containerd docker-containerd-ctr docker-containerd-shim dockerd docker-proxy docker-runc etcd etcdctl flanneld kube-apiserver kube-controller-manager kubectl kube-dns kube-scheduler kubelet kube-proxy mk-docker-opts.sh registry; do
             if [ ! -f $usr_bin/$f ];then
                 scp -r $k8s_node_username@$k8s_registry_hostname:$usr_bin/$f $usr_bin > /dev/null 2>&1
             fi

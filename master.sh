@@ -24,6 +24,9 @@ bash $basepath/os/check.sh
 # excute flannel shell (master need access pods network,e.g. )
 bash $basepath/flannel/flannel.sh
 
+# the kube-dns need kubeconfig
+bash $bashpath/kubernetes/node/kubcfg.sh
+
 # excute master service shell
 for s in apiserver controller-manager scheduler; do
     bash $basepath/kubernetes/master/$s.sh
