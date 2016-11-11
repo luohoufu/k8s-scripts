@@ -41,14 +41,13 @@ for ((i=0;i<${#arr_k8s_node_names[@]};i++));do
 done
 
 # setting apiserver ip address
-sed -i "s/127.0.0.1/$k8s_master/" $basepath/kubernetes/add-on/dashboard/dashboard-controller.yaml
-sed -i "s/registy_url/$registry_url/" $basepath/kubernetes/add-on/dashboard/dashboard-controller.yaml
+sed -i "s/127.0.0.1/$k8s_master/" $basepath/kubernetes/add-on/dashboard/kubernetes-dashboard.yaml
+sed -i "s/registy_url/$registry_url/" $basepath/kubernetes/add-on/dashboard/kubernetes-dashboard.yaml
 
 # you need docker pull images manual
 
 # check manual with kubectl get rc,svc,po --namespace=kube-system
 if [ $(kubectl get po --namespace=kube-system| grep dashboard |wc -l) -eq 0 ]; then
-    kubectl create -f  $basepath/kubernetes/add-on/dashboard/dashboard-controller.yaml
-    kubectl create -f  $basepath/kubernetes/add-on/dashboard/dashboard-service.yaml
-    #kubectl delete rc kubernetes-dashboard-v1.4.1 --namespace=kube-system && kubectl delete services kubernetes-dashboard --namespace=kube-system
+    kubectl create -f  $basepath/kubernetes/add-on/dashboard/kubernetes-dashboard.yaml
+    #kubectl -n kube-system delete deploy,svc kubernetes-dashboard
 fi
