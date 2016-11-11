@@ -25,7 +25,7 @@ bash $basepath/os/check.sh
 bash $basepath/flannel/flannel.sh
 
 # the kube-dns need kubeconfig
-bash $bashpath/kubernetes/node/kubcfg.sh
+bash $bashpath/kubernetes/node/kubecfg.sh
 
 # excute master service shell
 for s in apiserver controller-manager scheduler; do
