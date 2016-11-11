@@ -81,6 +81,13 @@ if [ $ip_falg -ne 1 ]; then
     exit 1
 fi
 
+# setting sshd
+if [ -f /etc/ssh/sshd_config ]; then
+    if grep -q "GSSAPIAuthentication yes" /etc/selinux/config ; then
+        sed -i "s/GSSAPIAuthentication yes/GSSAPIAuthentication no/g" /etc/ssh/sshd_config
+    fi
+fi
+
 # check firewall & iptables
 if [ $(ps -ef |grep "firewalld" |grep -v "grep" |wc -l) -gt 0 ]; then
     echo "setting disable firewalld......"
