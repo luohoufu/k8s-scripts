@@ -1,7 +1,7 @@
 {
-    "host":{
+    "host": {
         "username": "root",
-        "passwd": "hello@1234"        
+        "passwd": "hello@1234"
     },
     "cert": {
         "dir": "/ssl",
@@ -84,10 +84,11 @@
         }
     },
     "docker": {
-        "registry": {            
+        "registry": {
             "ip": "10.37.116.11",
             "port": 8443,
-            "data": "/opt"
+            "data": "/opt/docker",
+            "fsdriver": "overlay2"
         }
     },
     "k8s": {
@@ -104,5 +105,5 @@
         "iprange": "172.16.0.0/16",
         "dns": "10.37.116.31",
         "domain": "cluster.dev"
-    }    
+    }
 }

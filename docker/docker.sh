@@ -8,11 +8,16 @@ command_exists() {
     command -v "$@" > /dev/null 2>&1
 }
 
+export PATH=$PATH:$basepath/tools
+
+data_dir=`cat $basepath/config/k8s.json |jq '.docker.registry.data'|sed 's/\"//g'`
+fsdriver=`cat $basepath/config/k8s.json |jq '.docker.registry.fsdriver'|sed 's/\"//g'`
+
 # Create etcd.conf, etcd.service
 user=docker
 name=docker
 exefile=/usr/bin/docker
-data=/opt/docker
+data=${data_dir}
 conf=/etc/docker/docker
 netconf=/run/flannel/docker
 service=/usr/lib/systemd/system/docker.service
@@ -45,7 +50,8 @@ fi
 cat <<EOF >$conf
 # /etc/docker/docker
 # Modify these options if you want to change the way the docker daemon runs
-OPTIONS='--storage-driver=overlay2 --graph=/opt/docker --selinux-enabled=false'
+OPTIONS="--storage-driver=${fsdriver} --graph=${data} --selinux-enabled=false"
+DOCKER_CERT_PATH="/etc/docker"
 EOF
 
 cat <<EOF >$service

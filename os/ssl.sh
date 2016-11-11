@@ -13,6 +13,7 @@ ca_cfg=`cat $basepath/config/k8s.json |jq '.cert.cacfg'`
 req_csr=`cat $basepath/config/k8s.json |jq '.cert.reqcsr'`
 
 workdir=/tmp
+trusted=/etc/pki/ca-trust/source/anchors/
 check_path=$cert_dir/sync
 
 if [ -f $check_path ]; then
@@ -38,6 +39,8 @@ if [ ! -f $cert_dir/ca.pem ]; then
     echo -ne `echo $ca|jq ".cert"|sed 's/\"//g'` > $cert_dir/ca.pem
     echo -ne `echo $ca|jq ".key"|sed 's/\"//g'` > $cert_dir/ca-key.pem
     echo -ne `echo $ca|jq ".csr"|sed 's/\"//g'` > $cert_dir/ca.csr
+    #CAs trusted 
+    scp -r $cert_dir/ca.pem $trusted    
 fi
 
 for f in etcd flanneld server client; do
@@ -59,6 +62,7 @@ for ((i=0;i<${#arr_k8s_node_names[@]};i++));do
     if echo $k8s_node_hostname|grep -q "master"; then
         continue
     fi
+    scp -r $cert_dir/ca.pem $k8s_node_username@$k8s_node_hostname:$trusted > /dev/null 2>&1
     scp -r $cert_dir $k8s_node_username@$k8s_node_hostname:/ > /dev/null 2>&1
 done
 

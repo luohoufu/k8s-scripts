@@ -55,7 +55,7 @@ storage:
   cache:
     layerinfo: inmemory
   filesystem:
-    rootdirectory: ${data}
+    rootdirectory: ${data%/*}
 http:
   addr: :8443
   tls: 

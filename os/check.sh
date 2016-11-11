@@ -13,6 +13,9 @@ if [[ ! `id -u` -eq 0 ]]; then
     exit 1;
 fi
 
+# update trust cat
+update-ca-trust
+
 # add execute permission
  for f in $basepath/tools/*;do
     if test -f $f; then
