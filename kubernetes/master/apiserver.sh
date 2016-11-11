@@ -133,7 +133,8 @@ KUBE_API_TLS_PRIVATE_KEY_FILE="--tls-private-key-file=${certkey}"
 KUBE_API_SERVICE_ACCOUNT_KEY_FILE="--service-account-key-file=${certkey}"
 EOF
 
-KUBE_APISERVER_OPTS="   \${KUBE_LOGTOSTDERR}         \\
+KUBE_APISERVER_OPTS="                                \\
+                        \${KUBE_LOGTOSTDERR}         \\
                         \${KUBE_LOGDIR}              \\
                         \${KUBE_LOG_LEVEL}           \\
                         \${KUBE_ETCD_SERVERS}        \\

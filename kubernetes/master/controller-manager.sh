@@ -87,7 +87,8 @@ KUBE_CONTROLLER_MANAGER_ROOT_CA_FILE="--root-ca-file=${ca}"
 KUBE_CONTROLLER_MANAGER_SERVICE_ACCOUNT_PRIVATE_KEY_FILE="--service-account-private-key-file=${certkey}"
 EOF
 
-KUBE_CONTROLLER_MANAGER_OPTS="  \${KUBE_LOGTOSTDERR}            \\
+KUBE_CONTROLLER_MANAGER_OPTS="                                  \\
+                                \${KUBE_LOGTOSTDERR}            \\
                                 \${KUBE_LOGDIR}                 \\
                                 \${KUBE_LOG_LEVEL}              \\
                                 \${KUBE_MASTER}                 \\

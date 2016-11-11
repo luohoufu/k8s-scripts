@@ -79,7 +79,7 @@ FLANNELD_ETCD_SECURE="--etcd-cafile=${ca} --etcd-certfile=${cert} --etcd-keyfile
 FLANNELD_OPTIONS="--iface=${flannel_iface} --logtostderr=false --log_dir=/var/log/flanneld/"
 EOF
 
-FLANNELD_OPTS=" \\
+FLANNELD_OPTS="                             \\
                 \${FLANNELD_ETCD_ENDPOINTS} \\
                 \${FLANNELD_ETCD_PREFIX}    \\
                 \$FLANNELD_ETCD_SECURE      \\

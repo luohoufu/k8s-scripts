@@ -80,7 +80,8 @@ KUBE_CONFIG="--kubeconfig=${cfg}"
 KUBE_PROXY_MODE="--proxy-mode=iptables"
 EOF
 
-KUBE_PROXY_OPTS="   \${KUBE_LOGTOSTDERR}       \\
+KUBE_PROXY_OPTS="                              \\
+                    \${KUBE_LOGTOSTDERR}       \\
                     \${KUBE_LOGDIR}            \\
                     \${KUBE_LOG_LEVEL}         \\
                     \${NODE_HOSTNAME}          \\
