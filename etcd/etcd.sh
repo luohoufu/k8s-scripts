@@ -113,6 +113,7 @@ WorkingDirectory=${data}
 EnvironmentFile=-${conf}
 # set GOMAXPROCS to number of processors
 ExecStart=/bin/bash -c "GOMAXPROCS=\$(nproc) /usr/bin/etcd"
+Restart=on-failure
 
 [Install]
 WantedBy=multi-user.target

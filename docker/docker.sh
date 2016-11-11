@@ -61,7 +61,6 @@ Documentation=https://docs.docker.com
 After=network.target
 After=flanneld.service
 
-
 [Service]
 Type=notify
 EnvironmentFile=-${conf}
