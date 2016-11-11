@@ -67,10 +67,10 @@ KUBE_MASTER="--master=127.0.0.1:8080"
 KUBE_SCHEDULER_ARGS=""
 EOF
 
-KUBE_SCHEDULER_OPTS="   \${KUBE_LOGTOSTDERR}     \\
-                        \${KUBE_LOGDIR}          \\
-                        \${KUBE_LOG_LEVEL}       \\
-                        \${KUBE_MASTER}          \\
+KUBE_SCHEDULER_OPTS="   \${KUBE_LOGTOSTDERR}  \\
+                        \${KUBE_LOGDIR}       \\
+                        \${KUBE_LOG_LEVEL}    \\
+                        \${KUBE_MASTER}       \\
                         \${KUBE_SCHEDULER_ARGS}"
 
 cat <<EOF >$service

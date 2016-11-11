@@ -54,13 +54,13 @@ users:
     client-certificate: ${cert}
     client-key: ${certkey}
 clusters:
-- name: dev
+- name: local
   cluster:
     certificate-authority: ${ca}
     server: https://${k8s_master}:6443
 contexts:
 - context:
-    cluster: dev
+    cluster: local
     user: kubelet
   name: service-account-context
 current-context: service-account-context    
