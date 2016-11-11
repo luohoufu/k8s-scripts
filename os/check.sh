@@ -73,11 +73,11 @@ for ((i=0;i<${#arr_k8s_node_ips[@]};i++));do
     fi
 done
 if [ $master_flag -ne 1 ]; then
-    echo "ERROR: You must set only one node name with content master,Please modify $basepath/config/k8s.json!"
+    echo "ERROR: You must set only one node name with content master,Please setting $basepath/config/k8s.json first!"
     exit 1
 fi
 if [ $ip_falg -ne 1 ]; then
-    echo "ERROR: You ip not in cluster,,Please modify $basepath/config/k8s.json!"
+    echo "ERROR: You ip not in cluster,Please setting $basepath/config/k8s.json first!"
     exit 1
 fi
 
