@@ -19,6 +19,7 @@ name=kube-controller-manager
 exefile=/usr/bin/kube-controller-manager
 data=/var/log/k8s/controller-manager/
 ca=$cert_dir/ca.pem
+cakey=$cert_dir/ca-key.pem
 cert=$cert_dir/server.pem
 certkey=$cert_dir/server-key.pem
 conf=/etc/kubernetes/controller-manager.conf
@@ -71,6 +72,12 @@ KUBE_CLUSTER_CIDR="--cluster-cidr=${service_cluster_ip_range}"
 # --service-cluster-ip-range="" CIDR Range for Services in cluster.
 KUBE_SERVICE_CIDR="--service-cluster-ip-range=${service_cluster_ip_range}"
 
+# --cluster-signing-cert-file="": Filename containing a PEM-encoded X509 CA certificate used to issue cluster-scoped certificates
+KUBE_CLUSTER_CERT_FILE="--cluster-signing-cert-file=${ca}"
+
+# --cluster-signing-key-file="": Filename containing a PEM-encoded RSA or ECDSA private key used to sign cluster-scoped certificates
+KUBE_CLUSTER_CERT_KEY_FILE="--cluster-signing-key-file=${cakey}"
+
 # --root-ca-file="": If set, this root certificate authority will be included in
 # service account's token secret. This must be a valid PEM-encoded CA bundle.
 KUBE_CONTROLLER_MANAGER_ROOT_CA_FILE="--root-ca-file=${ca}"
@@ -80,13 +87,15 @@ KUBE_CONTROLLER_MANAGER_ROOT_CA_FILE="--root-ca-file=${ca}"
 KUBE_CONTROLLER_MANAGER_SERVICE_ACCOUNT_PRIVATE_KEY_FILE="--service-account-private-key-file=${certkey}"
 EOF
 
-KUBE_CONTROLLER_MANAGER_OPTS="  \${KUBE_LOGTOSTDERR}  \\
-                                \${KUBE_LOGDIR}       \\
-                                \${KUBE_LOG_LEVEL}    \\
-                                \${KUBE_MASTER}       \\
-                                \${KUBE_CLUSTER_CIDR} \\                                
-                                \${KUBE_SERVICE_CIDR} \\
-                                \${KUBE_ALLOCATE_NODE_CIDR}   \\
+KUBE_CONTROLLER_MANAGER_OPTS="  \${KUBE_LOGTOSTDERR}            \\
+                                \${KUBE_LOGDIR}                 \\
+                                \${KUBE_LOG_LEVEL}              \\
+                                \${KUBE_MASTER}                 \\
+                                \${KUBE_CLUSTER_CIDR}           \\                                
+                                \${KUBE_SERVICE_CIDR}           \\
+                                \${KUBE_CLUSTER_CERT_FILE}      \\
+                                \${KUBE_CLUSTER_CERT_KEY_FILE}  \\
+                                \${KUBE_ALLOCATE_NODE_CIDR}     \\
                                 \${KUBE_CONTROLLER_MANAGER_ROOT_CA_FILE} \\
                                 \${KUBE_CONTROLLER_MANAGER_SERVICE_ACCOUNT_PRIVATE_KEY_FILE}"
 
@@ -98,6 +107,7 @@ After=network.target
 After=kube-apiserver.service
 
 [Service]
+User=${user}
 EnvironmentFile=-${conf}
 ExecStart=/usr/bin/kube-controller-manager ${KUBE_CONTROLLER_MANAGER_OPTS}
 Restart=on-failure

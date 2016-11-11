@@ -29,7 +29,6 @@ cert_dir=`cat $basepath/config/k8s.json |jq '.cert.dir'|sed 's/\"//g'`
 node_ip=`hostname -i`
 
 # Create kube-proxy.conf, kube-proxy.service
-user=kube
 name=kube-proxy
 exefile=/usr/bin/kube-proxy
 data=/var/log/k8s/proxy/
@@ -46,11 +45,6 @@ if ! command_exists ${exefile##*/}; then
      exit 1;
 fi
 
-# check user
-if ! grep -q $user /etc/passwd; then
-    useradd -c "${name:0:4} user"  -d ${data%/*/*} -M -r -s /sbin/nologin $user
-fi
-
 # check confdir
 if [ ! -d "${conf%/*}" ]; then
      mkdir -p ${conf%/*}
@@ -59,9 +53,6 @@ fi
 # check workdir
 if [ ! -d "$data" ]; then
     mkdir -p $data
-    for p in $data $exefile $cert $certkey ${conf%/*}; do
-        chown -R $user:$user $p
-    done
 fi
 
 # config file

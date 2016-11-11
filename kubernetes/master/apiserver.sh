@@ -160,6 +160,7 @@ After=network.target
 After=etcd.service
 
 [Service]
+User=${user}
 EnvironmentFile=-${conf}
 ExecStart=/usr/bin/kube-apiserver ${KUBE_APISERVER_OPTS}
 Restart=on-failure

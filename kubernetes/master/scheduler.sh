@@ -81,6 +81,7 @@ After=network.target
 After=kube-apiserver.service
 
 [Service]
+User=${user}
 EnvironmentFile=-${conf}
 ExecStart=/usr/bin/kube-scheduler ${KUBE_SCHEDULER_OPTS}
 Restart=on-failure

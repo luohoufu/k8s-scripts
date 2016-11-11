@@ -18,7 +18,6 @@ cert_dir=`cat $basepath/config/k8s.json |jq '.cert.dir'|sed 's/\"//g'`
 node_ip=`hostname -i`
 
 # Create kubelet.conf, kubelet.service
-user=kube
 name=kubelet
 exefile=/usr/bin/kubelet
 data=/var/log/k8s/kubelet/
@@ -35,11 +34,6 @@ if ! command_exists ${exefile##*/}; then
      exit 1;
 fi
 
-# check user
-if ! grep -q $user /etc/passwd; then
-    useradd -c "${name:0:4} user"  -d ${data%/*/*} -M -r -s /sbin/nologin $user
-fi
-
 # check confdir
 if [ ! -d "${conf%/*}" ]; then
      mkdir -p ${conf%/*}
@@ -48,9 +42,6 @@ fi
 # check workdir
 if [ ! -d "$data" ]; then
     mkdir -p $data
-    for p in $data $exefile $cert $certkey $cfg ${conf%/*}; do
-        chown -R $user:$user $p
-    done
 fi
 
 # config file
