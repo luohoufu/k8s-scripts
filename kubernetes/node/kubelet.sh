@@ -85,7 +85,7 @@ KUBE_POD_INFRA="--pod-infra-container-image=${registry_url}/pause:latest"
 KUBELET_ARGS="--tls-cert-file=${cert} --tls-private-key-file=${certkey}"
 EOF
 
-KUBELET_OPTS="                           \\
+KUBELET_OPTS="  \\
                 \${KUBE_LOGTOSTDERR}     \\
                 \${KUBE_LOGDIR}          \\
                 \${KUBE_LOG_LEVEL}       \\

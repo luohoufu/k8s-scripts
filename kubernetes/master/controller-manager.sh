@@ -87,17 +87,17 @@ KUBE_CONTROLLER_MANAGER_ROOT_CA_FILE="--root-ca-file=${ca}"
 KUBE_CONTROLLER_MANAGER_SERVICE_ACCOUNT_PRIVATE_KEY_FILE="--service-account-private-key-file=${certkey}"
 EOF
 
-KUBE_CONTROLLER_MANAGER_OPTS="                                  \\
+KUBE_CONTROLLER_MANAGER_OPTS="  \\
                                 \${KUBE_LOGTOSTDERR}            \\
                                 \${KUBE_LOGDIR}                 \\
                                 \${KUBE_LOG_LEVEL}              \\
                                 \${KUBE_MASTER}                 \\
-                                \${KUBE_CLUSTER_CIDR}           \\                                
+                                \${KUBE_CLUSTER_CIDR}           \\
                                 \${KUBE_SERVICE_CIDR}           \\
                                 \${KUBE_CLUSTER_CERT_FILE}      \\
                                 \${KUBE_CLUSTER_CERT_KEY_FILE}  \\
                                 \${KUBE_ALLOCATE_NODE_CIDR}     \\
-                                \${KUBE_CONTROLLER_MANAGER_ROOT_CA_FILE} \\
+                                \${KUBE_CONTROLLER_MANAGER_ROOT_CA_FILE}   \\
                                 \${KUBE_CONTROLLER_MANAGER_SERVICE_ACCOUNT_PRIVATE_KEY_FILE}"
 
 cat <<EOF >$service
