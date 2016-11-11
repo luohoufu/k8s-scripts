@@ -130,7 +130,7 @@ KUBE_API_TLS_PRIVATE_KEY_FILE="--tls-private-key-file=${certkey}"
 
 # --service-account-key-file="": File containing PEM-encoded x509 RSA private or public key, used to verify ServiceAccount tokens. 
 # If unspecified, --tls-private-key-file is used.
-KUBE_API_SERVICE_ACCOUNT_KEY_FILE="--service-account-key-file==${certkey}"
+KUBE_API_SERVICE_ACCOUNT_KEY_FILE="--service-account-key-file=${certkey}"
 EOF
 
 KUBE_APISERVER_OPTS="   \${KUBE_LOGTOSTDERR}         \\
