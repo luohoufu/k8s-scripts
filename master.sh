@@ -28,7 +28,7 @@ bash $basepath/flannel/flannel.sh
 bash $basepath/kubernetes/node/kubecfg.sh
 
 # excute master service shell
-for s in apiserver controller-manager scheduler; do
+for s in apiserver controller-manager scheduler dns; do
     bash $basepath/kubernetes/master/$s.sh
 done
 

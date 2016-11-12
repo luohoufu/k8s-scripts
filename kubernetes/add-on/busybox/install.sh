@@ -41,9 +41,17 @@ for ((i=0;i<${#arr_k8s_node_names[@]};i++));do
 done
 
 # setting apiserver ip address
-sed -i "s/registy_url/$registry_url/g" $basepath/kubernetes/add-on/dashboard/kubernetes-heapster.yaml
+sed -i "s/registy_url/$registry_url/" $basepath/kubernetes/add-on/dashboard/kubernetes-dashboard.yaml
 
-if [ $(kubectl get po --namespace=kube-system| grep heapster |wc -l) -eq 0 ]; then
-    kubectl create -f $basepath/kubernetes-heapster.yaml
-    #kubectl -n kube-system delete deploy,svc kubernetes-heapster
+# you need docker pull images manual
+
+# check manual with kubectl get rc,svc,po --namespace=kube-system
+if [ $(kubectl get po | grep busybox |wc -l) -eq 0 ]; then
+    kubectl create -f  $basepath/kubernetes/add-on/dashboard/busybox.yaml
 fi
+
+# you can use for test
+# kubectl exec -i -t busybox sh 
+# nslookup k8s-nginx
+# nslookup k8s-nginx.default.kube.local
+# nslookup k8s-nginx.default.svc.kube.local

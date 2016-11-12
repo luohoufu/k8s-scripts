@@ -1,0 +1,13 @@
+kind: Pod
+apiVersion: v1
+metadata:
+  name: busybox
+  labels:
+    name: busybox  
+spec:
+  containers:
+    - name: busybox
+      image: registy_url/busybox  
+      command:
+      - sleep
+      - "360000"

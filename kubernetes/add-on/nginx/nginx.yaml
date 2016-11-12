@@ -1,0 +1,33 @@
+# Configuration to deploy release version of the Dashboard UI.
+#
+# Example usage: kubectl create -f <this_file>
+kind: Deployment
+apiVersion: extensions/v1beta1
+metadata:
+  name: k8s-nginx
+spec:
+  replicas: 2
+  template:
+    metadata:
+      labels:
+        app: k8s-nginx
+    spec:
+      containers:
+      - name: k8s-nginx
+        image: registy_url/nginx
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 80         
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: k8s-nginx
+  labels:
+    app: k8s-nginx
+spec:
+  ports:
+  - port: 80
+    targetPort: 80
+  selector:
+    app: k8s-nginx

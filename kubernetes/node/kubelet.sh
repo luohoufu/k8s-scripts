@@ -10,12 +10,25 @@ command_exists() {
 
 export PATH=$PATH:$basepath/tools
 
-registry_ip=`cat $basepath/config/k8s.json |jq '.docker.registry.ip'|sed 's/\"//g'`
-registry_port=`cat $basepath/config/k8s.json |jq '.docker.registry.port'|sed 's/\"//g'`
-registry_url=$registry_ip":"$registry_port
+dnsport=`cat $basepath/config/k8s.json |jq '.k8s.dnsport'|sed 's/\"//g'`
+domain=`cat $basepath/config/k8s.json |jq '.k8s.domain'|sed 's/\"//g'`
+
+k8s_node_names=`cat $basepath/config/k8s.json |jq '.k8s.nodes[].name'|sed 's/\"//g'`
+k8s_node_ips=`cat $basepath/config/k8s.json |jq '.k8s.nodes[].ip'|sed 's/\"//g'`
+
+arr_k8s_node_names=($(echo $k8s_node_names))
+arr_k8s_node_ips=($(echo $k8s_node_ips))
+
+for ((i=0;i<${#arr_k8s_node_names[@]};i++));do
+    k8s_node_hostname=${arr_k8s_node_names[$i]}
+    if echo $k8s_node_hostname|grep -q "master"; then
+        k8s_master=${arr_k8s_node_ips[$i]}
+    fi
+done
 
 cert_dir=`cat $basepath/config/k8s.json |jq '.cert.dir'|sed 's/\"//g'`
 node_ip=`hostname -i`
+dns=$k8s_master":"$dnsport
 
 # Create kubelet.conf, kubelet.service
 name=kubelet
@@ -82,7 +95,7 @@ KUBE_ALLOW_PRIV="--allow-privileged=false"
 KUBE_POD_INFRA="--pod-infra-container-image=${registry_url}/pause:latest"
 
 # Add your own!
-KUBELET_ARGS="--tls-cert-file=${cert} --tls-private-key-file=${certkey}"
+KUBELET_ARGS="--cluster_dns=${dns} --cluster_domain=${domain} --tls-cert-file=${cert} --tls-private-key-file=${certkey}"
 EOF
 
 KUBELET_OPTS="  \\
