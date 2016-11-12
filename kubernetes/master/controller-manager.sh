@@ -12,6 +12,7 @@ export PATH=$PATH:$basepath/tools
 
 cert_dir=`cat $basepath/config/k8s.json |jq '.cert.dir'|sed 's/\"//g'`
 service_cluster_ip_range=`cat $basepath/config/k8s.json |jq '.k8s.iprange'|sed 's/\"//g'`
+pod_cluster_ip_range=`cat $basepath/config/k8s.json |jq '.flannel.value.Network'|sed 's/\"//g'`
 
 # Create kube-controller-manager.conf, kube-controller-manager.service
 user=kube
@@ -67,7 +68,7 @@ KUBE_MASTER="--master=127.0.0.1:8080"
 KUBE_ALLOCATE_NODE_CIDR="--allocate-node-cidrs=true"
 
 # --cluster-cidr="" CIDR Range for Pods in cluster.
-KUBE_CLUSTER_CIDR="--cluster-cidr=${service_cluster_ip_range}"
+KUBE_CLUSTER_CIDR="--cluster-cidr=${pod_cluster_ip_range}"
 
 # --service-cluster-ip-range="" CIDR Range for Services in cluster.
 KUBE_SERVICE_CIDR="--service-cluster-ip-range=${service_cluster_ip_range}"
