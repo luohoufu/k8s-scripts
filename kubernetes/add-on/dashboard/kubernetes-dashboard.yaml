@@ -39,20 +39,26 @@ spec:
         args:
         -  --apiserver-host=https://127.0.0.1:6443
         -  --kubeconfig=/etc/kubernetes/kubecfg
+        livenessProbe:
+          httpGet:
+            path: /
+            port: 9090
+          initialDelaySeconds: 30
+          timeoutSeconds: 30        
         volumeMounts:
+        - name: "ssl"
+          mountPath: "/ssl"
+          readOnly: true
         - name: "etcpki"
           mountPath: "/etc/pki"
           readOnly: true
         - name: "config"
           mountPath: "/etc/kubernetes"
           readOnly: true
-        livenessProbe:
-          httpGet:
-            path: /
-            port: 9090
-          initialDelaySeconds: 30
-          timeoutSeconds: 30
       volumes:
+      - name: "ssl"
+        hostPath:
+          path: "/ssl"      
       - name: "etcpki"
         hostPath:
           path: "/etc/pki"
