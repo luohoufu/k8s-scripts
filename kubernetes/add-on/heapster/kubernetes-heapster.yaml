@@ -21,20 +21,28 @@ spec:
         version: v1.1.0
     spec:
       containers:
-        - image: registry_url/heapster:canary
-          imagePullPolicy: IfNotPresent
-          name: heapster
-          resources:
-            # keep request = limit to keep this container in guaranteed class
-            limits:
-              cpu: 100m
-              memory: 300Mi
-            requests:
-              cpu: 100m
-              memory: 300Mi
-          command:
-            - /heapster
-            - --source=kubernetes:https://kubernetes.default
+      - name: heapster      
+        image: registry_url/heapster:v1.1.0
+        imagePullPolicy: IfNotPresent
+        resources:
+          # keep request = limit to keep this container in guaranteed class
+          limits:
+            cpu: 100m
+            memory: 300Mi
+          requests:
+            cpu: 100m
+            memory: 300Mi
+        command:
+        - /heapster
+        - --source=kubernetes:https://kubernetes.default
+        volumeMounts:
+        - name: ssl-certs
+          mountPath: /etc/ssl/certs
+          readOnly: true
+      volumes:
+      - name: ssl-certs
+        hostPath:
+          path: /ssl            
 ---
 kind: Service
 apiVersion: v1
@@ -47,6 +55,6 @@ spec:
   type: NodePort
   ports:
   - port: 80
-    targetPort: 9090
+    targetPort: 8082
   selector:
     app: heapster

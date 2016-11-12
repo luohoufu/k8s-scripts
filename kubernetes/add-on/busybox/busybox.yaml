@@ -7,7 +7,8 @@ metadata:
 spec:
   containers:
     - name: busybox
-      image: registy_url/busybox  
+      image: registy_url/busybox
+      imagePullPolicy: IfNotPresent
       command:
       - sleep
       - "360000"
