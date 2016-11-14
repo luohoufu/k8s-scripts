@@ -31,6 +31,9 @@ fi
 
 echo "sync execute files to all nodes,please wait......"
 if [ ! -f $rsa_path ]; then
+    if [ ! -d ${rsa_path%/*} ]; then
+        mkdir -p ${rsa_path%/*}
+    fi
     ssh-keygen -q -t rsa -N "" -f $rsa_path
 fi
 #ssh with all nodes
