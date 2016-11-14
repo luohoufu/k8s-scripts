@@ -3,7 +3,7 @@
 
 set -e -o pipefail -o errtrace -o functrace
 
-basepath=$(cd `dirname $0`; pwd)
+basepath=$(cd `dirname $0`;cd ..; pwd)
 
 # check run user
 if [[ ! `id -u` -eq 0 ]]; then
