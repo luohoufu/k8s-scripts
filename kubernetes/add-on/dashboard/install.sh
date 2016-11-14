@@ -35,8 +35,8 @@ yaml=$basepath/kubernetes/add-on/dashboard/kubernetes-dashboard.yaml
 
 tmpdir=$(mktemp -d -t kubernetes.XXXXXX)
 trap 'rm -rf "${tmpdir}"' EXIT
+cat $yaml >> ${tmpdir}/config.yaml
 yaml=${tmpdir}/config.yaml
-cat $yaml >> $yaml
 
 # setting apiserver ip address
 sed -i "s/127.0.0.1/$k8s_master_ip/g" $yaml
