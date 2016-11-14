@@ -38,7 +38,7 @@ k8s_registry_hostname=`jq -r '.docker.registry.ip' $json`
 k8s_node_username=`jq -r '.host.uname' $json`
 k8s_node_passwd=`jq -r '.host.passwd' $json`
 
-k8s_node_names=()`jq -r '.k8s.nodes[].name' $json`)
+k8s_node_names=(`jq -r '.k8s.nodes[].name' $json`)
 
 for ((i=0;i<${#k8s_node_names[@]};i++));do
     k8s_node_hostname=${k8s_node_names[$i]}

@@ -20,9 +20,9 @@ if ! grep -q "master" /etc/hostname ; then
 fi
 
 export PATH=$PATH:$basepath/tools
-
-data_dir=`cat $basepath/config/k8s.json |jq '.docker.registry.data'|sed 's/\"//g'`
-cert_dir=`cat $basepath/config/k8s.json |jq '.cert.dir'|sed 's/\"//g'`
+json=$basepath/config/k8s.json
+cert_dir=`jq -r '.cert.dir' $json`
+data_dir=`jq -r '.docker.registry.data' $json`
 
 name=registry
 data=$data_dir

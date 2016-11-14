@@ -41,11 +41,16 @@ if ! command_exists ntpd; then
 fi
 
 export PATH=$PATH:$basepath/tools
+json=$basepath/config/k8s.json
+cert_dir=`jq -r '.cert.dir' $json`
 
-ssh_dir=/root/.ssh
-cert_dir=`cat $basepath/config/k8s.json |jq '.cert.dir'|sed 's/\"//g'`
+k8s_node_username=`jq -r '.host.uname' $json`
+k8s_node_passwd=`jq -r '.host.passwd' $json`
+k8s_node_names=(`jq -r '.k8s.nodes[].name' $json`)
+k8s_node_ips=(`jq -r '.k8s.nodes[].ip' $json`)
 
 # ssh folder
+ssh_dir=/root/.ssh
 if [ ! -d $ssh_dir ]; then
     mkdir -p $ssh_dir
 fi
@@ -56,19 +61,13 @@ if [ ! -d $cert_dir ]; then
 fi
 
 #check config
-k8s_node_names=`cat $basepath/config/k8s.json |jq '.k8s.nodes[].name'|sed 's/\"//g'`
-k8s_node_ips=`cat $basepath/config/k8s.json |jq '.k8s.nodes[].ip'|sed 's/\"//g'`
-
-arr_k8s_node_names=($(echo $k8s_node_names))
-arr_k8s_node_ips=($(echo $k8s_node_ips))
-
 master_flag=0
 ip_falg=0
-for ((i=0;i<${#arr_k8s_node_ips[@]};i++));do
-    if echo ${arr_k8s_node_names[$i]}|grep -q "master"; then
+for ((i=0;i<${#k8s_node_ips[@]};i++));do
+    if echo ${k8s_node_names[$i]}|grep -q "master"; then
         master_flag=$(($master_flag+1))
     fi
-    if ip a |grep -q ${arr_k8s_node_ips[$i]}; then
+    if ip a |grep -q ${k8s_node_ips[$i]}; then
         ip_falg=$(($ip_falg+1))
     fi
 done
