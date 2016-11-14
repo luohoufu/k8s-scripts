@@ -24,7 +24,7 @@ fi
 export PATH=$PATH:$basepath/tools
 json=$basepath/config/k8s.json
 cert_dir=`jq -r '.cert.dir' $json`
-kbs_cfg=`jq -r '.k8s.cfg' $json`
+kb_cfg=`jq -r '.k8s.cfg' $json`
 registry_ip=`jq -r '.docker.registry.ip' $json`
 registry_port=`jq -r '.docker.registry.port' $json`
 registry_url=$registry_ip":"$registry_port
@@ -36,7 +36,7 @@ yaml=$basepath/kubernetes/add-on/dashboard/kubernetes-dashboard.yaml
 # setting apiserver ip address
 sed -i "s/127.0.0.1/$k8s_master_ip/g" $yaml
 sed -i "s/registry_url/$registry_url/g" $yaml
-sed -i "s/kbs_cfg/$kbs_cfg/g" $yaml
+sed -i "s/kb_cfg/$kb_cfg/g" $yaml
 sed -i "s/cert_dir/$cert_dir/g" $yaml
 
 # you need docker pull images manual
