@@ -20,6 +20,7 @@ rsa_path=/root/.ssh/id_rsa
 host_path=/root/.ssh/known_hosts
 check_path=/tmp/sync
 exe_dir=/usr/bin
+trusted=/etc/pki/ca-trust/source/anchors/ca-registry.pem
 
 if [ -f $check_path ]; then
     echo "Do you want run $0 again? [Y]/n"
@@ -63,7 +64,7 @@ for ((i=0;i<${#k8s_node_names[@]};i++));do
             if [ ! -f $exe_dir/$f ];then
                 scp -r $k8s_node_username@$k8s_registry_hostname:$exe_dir/$f $exe_dir > /dev/null 2>&1
             fi
-         done
+         done         
         continue
     fi
 
@@ -76,6 +77,13 @@ for ((i=0;i<${#k8s_node_names[@]};i++));do
         if [ -f $exe_dir/$f ];then
             scp -r $exe_dir/$f $k8s_node_username@$k8s_node_hostname:$exe_dir > /dev/null 2>&1
         fi
+
+        #
+        # WARNNING,please check you registy ca.pem path,i use /etc/share/ca.pem 
+        #
+        if [ ! -f $trusted ];then
+            scp -r /etc/share/ca.pem $k8s_node_username@$k8s_node_hostname:$trusted > /dev/null 2>&1
+         fi
     done
 
 done
