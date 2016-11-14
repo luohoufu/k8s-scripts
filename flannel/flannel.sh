@@ -85,7 +85,7 @@ cat <<EOF >$service
 [Unit]
 Description=Flanneld overlay address etcd agent
 After=network.target
-After=etcd.target
+After=etcd.service
 Before=docker.service
 
 [Service]
