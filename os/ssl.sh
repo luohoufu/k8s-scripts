@@ -58,7 +58,7 @@ done
 
 # sync ssl file to nodes
 for ((i=0;i<${#k8s_node_names[@]};i++));do
-    k8s_node_hostname=${arr_k8s_node_names[$i]}
+    k8s_node_hostname=${k8s_node_names[$i]}
     #CA trusted 
     scp -r $cert_dir/ca.pem $k8s_node_username@$k8s_node_hostname:$trusted > /dev/null 2>&1    
     scp -r $cert_dir $k8s_node_username@$k8s_node_hostname:/ > /dev/null 2>&1
