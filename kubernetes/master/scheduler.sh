@@ -9,8 +9,8 @@ command_exists() {
 }
 
 export PATH=$PATH:$basepath/tools
-
-cert_dir=`cat $basepath/config/k8s.json |jq '.cert.dir'|sed 's/\"//g'`
+json=$basepath/config/k8s.json
+cert_dir=`jq -r '.cert.dir' $json`
 
 # Create kube-scheduler.conf, kube-scheduler.service
 user=kube

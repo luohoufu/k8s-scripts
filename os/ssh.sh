@@ -24,19 +24,13 @@ fi
 
 #ssh with all nodes
 export PATH=$PATH:$basepath/tools
+json=$basepath/config/k8s.json
+k8s_node_username=`jq -r '.host.uname' $json`
+k8s_node_passwd=`jq -r '.host.passwd' $json`
+k8s_node_names=(`jq -r '.k8s.nodes[]| select(.type == "node")|.ip' $json`)
 
-k8s_node_username=`cat $basepath/config/k8s.json |jq '.host.uname'|sed 's/\"//g'`
-k8s_node_passwd=`cat $basepath/config/k8s.json |jq '.host.passwd'|sed 's/\"//g'`
-
-k8s_node_names=`cat $basepath/config/k8s.json |jq '.k8s.nodes[].name'|sed 's/\"//g'`
-
-arr_k8s_node_names=($(echo $k8s_node_names))
-
-for ((i=0;i<${#arr_k8s_node_names[@]};i++));do
-    k8s_node_hostname=${arr_k8s_node_names[$i]}
-    if echo $k8s_node_hostname|grep -q "master"; then
-        continue
-    fi
+for ((i=0;i<${#k8s_node_names[@]};i++));do
+    k8s_node_hostname=${k8s_node_names[$i]}
     if [ -f $host_path ]; then
         if grep -wq "$k8s_node_hostname" $host_path; then
             continue

@@ -32,13 +32,13 @@ spec:
             memory: 50Mi
         env:
         - name: KUBECONFIG
-          value: /etc/kubernetes/kubecfg
+          value: k8s_cfg
         ports:
         - containerPort: 9090
           protocol: TCP
         args:
         -  --apiserver-host=https://127.0.0.1:6443
-        -  --kubeconfig=/etc/kubernetes/kubecfg
+        -  --kubeconfig=k8s_cfg
         livenessProbe:
           httpGet:
             path: /
@@ -47,7 +47,7 @@ spec:
           timeoutSeconds: 30        
         volumeMounts:
         - name: "ssl"
-          mountPath: "/ssl"
+          mountPath: "cert_dir"
           readOnly: true
         - name: "etcpki"
           mountPath: "/etc/pki"
@@ -58,7 +58,7 @@ spec:
       volumes:
       - name: "ssl"
         hostPath:
-          path: "/ssl"      
+          path: "cert_dir"      
       - name: "etcpki"
         hostPath:
           path: "/etc/pki"

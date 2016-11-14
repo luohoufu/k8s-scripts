@@ -9,17 +9,16 @@ command_exists() {
 }
 
 export PATH=$PATH:$basepath/tools
+json=$basepath/config/k8s.json
+data=`jq -r '.docker.registry.data' $json`
+fs_driver=`jq -r '.docker.registry.fs_driver' $json`
 
-data_dir=`cat $basepath/config/k8s.json |jq '.docker.registry.data'|sed 's/\"//g'`
-fsdriver=`cat $basepath/config/k8s.json |jq '.docker.registry.fsdriver'|sed 's/\"//g'`
-
-# Create etcd.conf, etcd.service
+# Create docker.conf, docker.service
 user=docker
 name=docker
 exefile=/usr/bin/docker
-data=${data_dir}
 conf=/etc/docker/docker
-netconf=/run/flannel/docker
+net_conf=/run/flannel/docker
 service=/usr/lib/systemd/system/docker.service
 
 # check excute 
@@ -50,7 +49,7 @@ fi
 cat <<EOF >$conf
 # /etc/docker/docker
 # Modify these options if you want to change the way the docker daemon runs
-OPTIONS="--storage-driver=${fsdriver} --graph=${data} --selinux-enabled=false"
+OPTIONS="--storage-driver=${fs_driver} --graph=${data} --selinux-enabled=false"
 DOCKER_CERT_PATH="/etc/docker"
 EOF
 
@@ -64,7 +63,7 @@ After=flanneld.service
 [Service]
 Type=notify
 EnvironmentFile=-${conf}
-EnvironmentFile=-${netconf}
+EnvironmentFile=-${net_conf}
 ExecStart=/usr/bin/dockerd \$OPTIONS \$DOCKER_NETWORK_OPTIONS
 ExecReload=/bin/kill -s HUP $MAINPID
 # Having non-zero Limit*s causes performance problems due to accounting overhead

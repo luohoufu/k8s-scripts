@@ -9,18 +9,14 @@ command_exists() {
 }
 
 export PATH=$PATH:$basepath/tools
-
-flannel_iface=`cat $basepath/config/k8s.json |jq '.flannel.iface'|sed 's/\"//g'`
-flannel_key=`cat $basepath/config/k8s.json |jq '.flannel.key'|sed 's/\"//g'`
-flannel_value=`cat $basepath/config/k8s.json |jq '.flannel.value'`
-
-etcd_node=`cat $basepath/config/k8s.json |jq '.etcd.nodes[0].ip'|sed 's/\"//g'`
-
-etcd_node_ips=`cat $basepath/config/k8s.json |jq '.etcd.nodes[].ip'|sed 's/\"//g'`
-
+json=$basepath/config/k8s.json
+cert_dir=`jq -r '.cert.dir' $json`
+flannel_iface=`jq -r '.flannel.iface' $json`
+flannel_key=`jq -r '.flannel.key' $json`
+flannel_value=`jq -r '.flannel.value' $json`
+etcd_node=`jq -r '.etcd.nodes[0].ip' $json`
+etcd_node_ips=`jq -r '.etcd.nodes[].ip' $json`
 etcd_endpoints=`echo $etcd_node_ips|awk '{for (i = 1; i < NF; i++) printf("https://%s:2379,",$i);printf("https://%s:2379",$NF)}'`
-
-cert_dir=`cat $basepath/config/k8s.json |jq '.cert.dir'|sed 's/\"//g'`
 
 # Create flanneld.conf, flanneld.service
 name=flanneld

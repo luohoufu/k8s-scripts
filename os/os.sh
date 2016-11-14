@@ -5,6 +5,10 @@ set -e -o pipefail -o errtrace -o functrace
 
 basepath=$(cd `dirname $0`;cd ..; pwd)
 
+export PATH=$PATH:$basepath/tools
+json=$basepath/config/k8s.json
+cert_dir=`jq -r '.cert.dir' $json`
+
 #get summary info
 echo "------------------------------------[w]------------------------------------"
 echo `w`
@@ -49,8 +53,8 @@ echo "------------------------------------[ls /root/.ssh]-----------------------
 echo `ls /root/.ssh`
 echo
 echo
-echo "------------------------------------[ls /ssl]------------------------------------"
-echo `ls /ssl`
+echo "------------------------------------[ls $cert_dir]------------------------------------"
+echo `ls $cert_dir`
 echo
 echo
 

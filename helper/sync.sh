@@ -18,7 +18,7 @@ fi
 
 host_path=/root/.ssh/known_hosts
 check_path=/tmp/sync
-usr_bin=/usr/bin
+exe_dir=/usr/bin
 
 if [ -f $check_path ]; then
     echo "Do you want run $0 again? [Y]/n"
@@ -32,19 +32,16 @@ echo "sync execute files to all nodes,please wait......"
 
 #ssh with all nodes
 export PATH=$PATH:$basepath/tools
-
-k8s_registry_hostname=`cat $basepath/config/k8s.json |jq '.docker.registry.ip'|sed 's/\"//g'`
-
+json=$basepath/config/k8s.json
+k8s_registry_hostname=`jq -r '.docker.registry.ip' $json`
 # each node sync
-k8s_node_username=`cat $basepath/config/k8s.json |jq '.host.uname'|sed 's/\"//g'`
-k8s_node_passwd=`cat $basepath/config/k8s.json |jq '.host.passwd'|sed 's/\"//g'`
+k8s_node_username=`jq -r '.host.uname' $json`
+k8s_node_passwd=`jq -r '.host.passwd' $json`
 
-k8s_node_names=`cat $basepath/config/k8s.json |jq '.k8s.nodes[].name'|sed 's/\"//g'`
+k8s_node_names=()`jq -r '.k8s.nodes[].name' $json`)
 
-arr_k8s_node_names=($(echo $k8s_node_names))
-
-for ((i=0;i<${#arr_k8s_node_names[@]};i++));do
-    k8s_node_hostname=${arr_k8s_node_names[$i]}
+for ((i=0;i<${#k8s_node_names[@]};i++));do
+    k8s_node_hostname=${k8s_node_names[$i]}
     if echo $k8s_node_hostname|grep -q "master"; then
         if [ -f $host_path ]; then
             if ! grep -wq "$k8s_registry_hostname" $host_path; then
@@ -52,16 +49,16 @@ for ((i=0;i<${#arr_k8s_node_names[@]};i++));do
             fi
         fi
         for f in docker docker-containerd docker-containerd-ctr docker-containerd-shim dockerd docker-proxy docker-runc etcd etcdctl flanneld kube-apiserver kube-controller-manager kubectl kube-dns kube-scheduler kubelet kube-proxy mk-docker-opts.sh registry; do
-            if [ ! -f $usr_bin/$f ];then
-                scp -r $k8s_node_username@$k8s_registry_hostname:$usr_bin/$f $usr_bin > /dev/null 2>&1
+            if [ ! -f $exe_dir/$f ];then
+                scp -r $k8s_node_username@$k8s_registry_hostname:$exe_dir/$f $exe_dir > /dev/null 2>&1
             fi
          done
         continue
     fi
     
     for f in docker docker-containerd docker-containerd-ctr docker-containerd-shim dockerd docker-proxy docker-runc etcd etcdctl flanneld kubelet kube-proxy mk-docker-opts.sh; do
-        if [ -f $usr_bin/$f ];then
-            scp -r $usr_bin/$f $k8s_node_username@$k8s_node_hostname:$usr_bin > /dev/null 2>&1
+        if [ -f $exe_dir/$f ];then
+            scp -r $exe_dir/$f $k8s_node_username@$k8s_node_hostname:$exe_dir > /dev/null 2>&1
         fi
     done
 done

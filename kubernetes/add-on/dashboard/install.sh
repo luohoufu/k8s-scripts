@@ -22,32 +22,27 @@ if ! grep -q "master" /etc/hostname ; then
 fi
 
 export PATH=$PATH:$basepath/tools
-
-registry_ip=`cat $basepath/config/k8s.json |jq '.docker.registry.ip'|sed 's/\"//g'`
-registry_port=`cat $basepath/config/k8s.json |jq '.docker.registry.port'|sed 's/\"//g'`
+json=$basepath/config/k8s.json
+cert_dir=`jq -r '.cert.dir' $json`
+k8s_cfg==`jq -r '.k8s.cfg' $json`
+registry_ip=`jq -r '.docker.registry.ip' $json`
+registry_port=`jq -r '.docker.registry.port' $json`
 registry_url=$registry_ip":"$registry_port
+k8s_master_ip=`jq -r '.k8s.nodes[]| select(.type == "master")|.ip' $json` 
 
-k8s_node_names=`cat $basepath/config/k8s.json |jq '.k8s.nodes[].name'|sed 's/\"//g'`
-k8s_node_ips=`cat $basepath/config/k8s.json |jq '.k8s.nodes[].ip'|sed 's/\"//g'`
-
-arr_k8s_node_names=($(echo $k8s_node_names))
-arr_k8s_node_ips=($(echo $k8s_node_ips))
-
-for ((i=0;i<${#arr_k8s_node_names[@]};i++));do
-    k8s_node_hostname=${arr_k8s_node_names[$i]}
-    if echo $k8s_node_hostname|grep -q "master"; then
-        k8s_master=${arr_k8s_node_ips[$i]}
-    fi
-done
+name=dashboard
+yaml=$basepath/kubernetes/add-on/dashboard/kubernetes-dashboard.yaml
 
 # setting apiserver ip address
-sed -i "s/127.0.0.1/$k8s_master/" $basepath/kubernetes/add-on/dashboard/kubernetes-dashboard.yaml
-sed -i "s/registy_url/$registry_url/" $basepath/kubernetes/add-on/dashboard/kubernetes-dashboard.yaml
+sed -i "s/127.0.0.1/$k8s_master_ip/" $yaml
+sed -i "s/registy_url/$registry_url/" $yaml
+sed -i "s/k8s_cfg/$k8s_cfg/" $yaml
+sed -i "s/cert_dir/$cert_dir/" $yaml
 
 # you need docker pull images manual
 
 # check manual with kubectl get rc,svc,po --namespace=kube-system
-if [ $(kubectl get po --namespace=kube-system| grep dashboard |wc -l) -eq 0 ]; then
-    kubectl create -f  $basepath/kubernetes/add-on/dashboard/kubernetes-dashboard.yaml
+if [ $(kubectl get po --namespace=kube-system| grep $name |wc -l) -eq 0 ]; then
+    kubectl create -f  $yaml
     #kubectl -n kube-system delete deploy,svc kubernetes-dashboard
 fi

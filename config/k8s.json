@@ -68,6 +68,10 @@
             {
                 "name": "etcd2",
                 "ip": "10.37.116.30"
+            },
+            {
+                "name": "etcd3",
+                "ip": "10.37.116.18"
             }
         ]
     },
@@ -85,7 +89,7 @@
     },
     "docker": {
         "registry": {
-            "ip": "10.37.116.26",
+            "ip": "10.37.116.11",
             "port": 8443,
             "data": "/opt/docker",
             "fsdriver": "overlay2"
@@ -95,13 +99,16 @@
         "nodes": [
             {
                 "name": "k8s-master.dev",
-                "ip": "10.37.116.26"
+                "ip": "10.37.116.26",
+                "type": "master"
             },
             {
                 "name": "k8s-node-1.dev",
-                "ip": "10.37.116.30"
+                "ip": "10.37.116.30",
+                "type": "node"
             }
         ],
+        "cfg":"/etc/kubernetes/kubecfg",
         "iprange": "172.16.0.0/16",
         "dnsport": "6553",
         "domain": "cluster.dev"

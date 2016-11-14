@@ -20,6 +20,18 @@ if ! grep -q "master" /etc/hostname ; then
     echo "ERROR: This shell must run on master node!"
     exit 1
 fi
+
+export PATH=$PATH:$basepath/tools
+json=$basepath/config/k8s.json
+registry_ip=`jq -r '.docker.registry.ip' $json`
+registry_port=`jq -r '.docker.registry.port' $json`
+registry_url=$registry_ip":"$registry_port
+
+yaml=$basepath/kubernetes/add-on/nginx/nginx.yaml
+
+# setting apiserver ip address
+sed -i "s/registy_url/$registry_url/" $yaml
+
 # you need docker pull images manual
 
 # check manual with kubectl get rc,svc,po --namespace=kube-system

@@ -9,16 +9,16 @@ command_exists() {
 }
 
 export PATH=$PATH:$basepath/tools
-
-dnsport=`cat $basepath/config/k8s.json |jq '.k8s.dnsport'|sed 's/\"//g'`
-domain=`cat $basepath/config/k8s.json |jq '.k8s.domain'|sed 's/\"//g'`
+json=$basepath/config/k8s.json
+dnsport=`jq -r '.k8s.dnsport' $json`
+domain=`jq -r '.k8s.domain' $json`
+cfg=`jq -r '.k8s.cfg' $json`
 
 # Create kube-dns.conf, kube-dns.service
 user=kube
 name=kube-dns
 exefile=/usr/bin/kube-dns
 data=/var/log/k8s/dns/
-cfg=/etc/kubernetes/kubecfg
 conf=/etc/kubernetes/dns.conf
 service=/usr/lib/systemd/system/kube-dns.service
 

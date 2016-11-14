@@ -9,26 +9,12 @@ command_exists() {
 }
 
 export PATH=$PATH:$basepath/tools
-
-service_cluster_ip_range=`cat $basepath/config/k8s.json |jq '.k8s.iprange'|sed 's/\"//g'`
-
-k8s_node_names=`cat $basepath/config/k8s.json |jq '.k8s.nodes[].name'|sed 's/\"//g'`
-k8s_node_ips=`cat $basepath/config/k8s.json |jq '.k8s.nodes[].ip'|sed 's/\"//g'`
-
-arr_k8s_node_names=($(echo $k8s_node_names))
-arr_k8s_node_ips=($(echo $k8s_node_ips))
-
-for ((i=0;i<${#arr_k8s_node_names[@]};i++));do
-    k8s_node_hostname=${arr_k8s_node_names[$i]}
-    if echo $k8s_node_hostname|grep -q "master"; then
-        k8s_master=${arr_k8s_node_ips[$i]}
-    fi
-done
-
-etcd_node_ips=`cat $basepath/config/k8s.json |jq '.etcd.nodes[].ip'|sed 's/\"//g'`
+json=$basepath/config/k8s.json
+cert_dir=`jq -r '.cert.dir' $json`
+service_cluster_ip_range=`jq -r '.k8s.iprange' $json`
+k8s_master_ip=`jq -r '.k8s.nodes[]| select(.type == "master")|.ip' $json` 
+etcd_node_ips=`jq -r '.etcd.nodes[].ip' $json`
 etcd_endpoints=`echo $etcd_node_ips|awk '{for (i = 1; i < NF; i++) printf("https://%s:2379,",$i);printf("https://%s:2379",$NF)}'`
-
-cert_dir=`cat $basepath/config/k8s.json |jq '.cert.dir'|sed 's/\"//g'`
 
 # Create kube-apiserver.conf, kube-apiserver.service
 user=kube
@@ -90,14 +76,14 @@ KUBE_ETCD_CERTFILE="--etcd-certfile=${etcdcert}"
 KUBE_ETCD_KEYFILE="--etcd-keyfile=${etcdcertkey}"
 
 # --insecure-bind-address=127.0.0.1: The IP address on which to serve the --insecure-port.
-KUBE_API_ADDRESS="--bind-address=${k8s_master}"
+KUBE_API_ADDRESS="--bind-address=${k8s_master_ip}"
 
 # --insecure-port=8080: The port on which to serve unsecured, unauthenticated access.
 KUBE_API_PORT="--secure-port=6443"
 
 # --advertise-address=<nil>: The IP address on which to advertise 
 # the apiserver to members of the cluster.
-KUBE_ADVERTISE_ADDR="--advertise-address=${k8s_master}"
+KUBE_ADVERTISE_ADDR="--advertise-address=${k8s_master_ip}"
 
 # --allow-privileged=false: If true, allow privileged containers.
 KUBE_ALLOW_PRIV="--allow-privileged=false"

@@ -10,6 +10,8 @@ if grep -q "=disabled" /etc/selinux/config ; then
 fi
 
 echo "setting selinux to disabled,please wait......"
+
 sed -i "s/=enforcing/=disabled/g" /etc/selinux/config
 setenforce 0
+
 echo "......done"

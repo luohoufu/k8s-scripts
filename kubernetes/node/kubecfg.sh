@@ -9,31 +9,16 @@ command_exists() {
 }
 
 export PATH=$PATH:$basepath/tools
-
-service_cluster_ip_range=`cat $basepath/config/k8s.json |jq '.k8s.iprange'|sed 's/\"//g'`
-
-k8s_node_names=`cat $basepath/config/k8s.json |jq '.k8s.nodes[].name'|sed 's/\"//g'`
-k8s_node_ips=`cat $basepath/config/k8s.json |jq '.k8s.nodes[].ip'|sed 's/\"//g'`
-
-arr_k8s_node_names=($(echo $k8s_node_names))
-arr_k8s_node_ips=($(echo $k8s_node_ips))
-
-for ((i=0;i<${#arr_k8s_node_names[@]};i++));do
-    k8s_node_hostname=${arr_k8s_node_names[$i]}
-    if echo $k8s_node_hostname|grep -q "master"; then
-        k8s_master=${arr_k8s_node_ips[$i]}
-    fi
-done
-
-
-cert_dir=`cat $basepath/config/k8s.json |jq '.cert.dir'|sed 's/\"//g'`
+json=$basepath/config/k8s.json
+cert_dir=`jq -r '.cert.dir' $json`
+conf=`jq -r '.k8s.cfg' $json`
+k8s_master_ip=`jq -r '.k8s.nodes[]| select(.type == "master")|.ip' $json` 
 
 ca=$cert_dir/ca.pem
 cert=$cert_dir/client.pem
 certkey=$cert_dir/client-key.pem
-conf=/etc/kubernetes/kubecfg
 
-# if you want use base64 data,that not need mount volumes in docker
+# if you want use base64 data,that not need mount volumes to docker
 #ca_base64=`cat $ca |base64|awk '{printf("%s"),$0}'`
 #cert_base64=`cat $cert |base64|awk '{printf("%s"),$0}'`
 #certkey_base64=`cat $certkey |base64|awk '{printf("%s"),$0}'`
@@ -55,7 +40,7 @@ clusters:
 - name: local
   cluster:
     certificate-authority: ${ca}
-    server: https://${k8s_master}:6443
+    server: https://${k8s_master_ip}:6443
 contexts:
 - context:
     cluster: local

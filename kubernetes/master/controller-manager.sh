@@ -9,10 +9,10 @@ command_exists() {
 }
 
 export PATH=$PATH:$basepath/tools
-
-cert_dir=`cat $basepath/config/k8s.json |jq '.cert.dir'|sed 's/\"//g'`
-service_cluster_ip_range=`cat $basepath/config/k8s.json |jq '.k8s.iprange'|sed 's/\"//g'`
-pod_cluster_ip_range=`cat $basepath/config/k8s.json |jq '.flannel.value.Network'|sed 's/\"//g'`
+json=$basepath/config/k8s.json
+cert_dir=`jq -r '.cert.dir' $json`
+service_cluster_ip_range=`jq -r '.k8s.iprange' $json`
+pod_cluster_ip_range=`jq -r '.flannel.value.Network' $json`
 
 # Create kube-controller-manager.conf, kube-controller-manager.service
 user=kube

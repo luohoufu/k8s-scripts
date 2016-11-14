@@ -9,23 +9,10 @@ command_exists() {
 }
 
 export PATH=$PATH:$basepath/tools
+json=$basepath/config/k8s.json
+cert_dir=`jq -r '.cert.dir' $json`
+cfg=`jq -r '.k8s.cfg' $json`
 
-service_cluster_ip_range=`cat $basepath/config/k8s.json |jq '.k8s.iprange'|sed 's/\"//g'`
-
-k8s_node_names=`cat $basepath/config/k8s.json |jq '.k8s.nodes[].name'|sed 's/\"//g'`
-k8s_node_ips=`cat $basepath/config/k8s.json |jq '.k8s.nodes[].ip'|sed 's/\"//g'`
-
-arr_k8s_node_names=($(echo $k8s_node_names))
-arr_k8s_node_ips=($(echo $k8s_node_ips))
-
-for ((i=0;i<${#arr_k8s_node_names[@]};i++));do
-    k8s_node_hostname=${arr_k8s_node_names[$i]}
-    if echo $k8s_node_hostname|grep -q "master"; then
-        k8s_master=${arr_k8s_node_ips[$i]}
-    fi
-done
-
-cert_dir=`cat $basepath/config/k8s.json |jq '.cert.dir'|sed 's/\"//g'`
 node_ip=`hostname -i`
 
 # Create kube-proxy.conf, kube-proxy.service
@@ -35,7 +22,6 @@ data=/var/log/k8s/proxy/
 ca=$cert_dir/ca.pem
 cert=$cert_dir/client.pem
 certkey=$cert_dir/client-key.pem
-cfg=/etc/kubernetes/kubecfg
 conf=/etc/kubernetes/proxy.conf
 service=/usr/lib/systemd/system/kube-proxy.service
 

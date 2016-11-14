@@ -6,11 +6,15 @@ set -e -o pipefail -o errtrace -o functrace
 basepath=$(cd `dirname $0`;cd ..; pwd)
 
 export PATH=$PATH:$basepath/tools
+json=$basepath/config/k8s.json
+cert_dir=`jq -r '.cert.dir' $json`
+ca_csr=`jq '.cert.cacsr' $json`
+ca_cfg=`jq '.cert.cacfg' $json`
+req_csr=`jq '.cert.reqcsr' $json`
 
-cert_dir=`cat $basepath/config/k8s.json |jq '.cert.dir'|sed 's/\"//g'`
-ca_csr=`cat $basepath/config/k8s.json |jq '.cert.cacsr'`
-ca_cfg=`cat $basepath/config/k8s.json |jq '.cert.cacfg'`
-req_csr=`cat $basepath/config/k8s.json |jq '.cert.reqcsr'`
+k8s_node_username=`jq -r '.host.uname' $json`
+k8s_node_passwd=`jq -r '.host.passwd' $json`
+k8s_node_names=(`jq -r '.k8s.nodes[]| select(.type == "node")|.ip' $json`)
 
 workdir=/tmp
 trusted=/etc/pki/ca-trust/source/anchors/
@@ -52,16 +56,9 @@ for f in etcd flanneld server client; do
     fi
 done
 
-k8s_node_username=`cat $basepath/config/k8s.json |jq '.host.uname'|sed 's/\"//g'`
-k8s_node_names=`cat $basepath/config/k8s.json |jq '.k8s.nodes[].name'|sed 's/\"//g'`
-
-arr_k8s_node_names=($(echo $k8s_node_names))
-
-for ((i=0;i<${#arr_k8s_node_names[@]};i++));do
+# sync ssl file to nodes
+for ((i=0;i<${#k8s_node_names[@]};i++));do
     k8s_node_hostname=${arr_k8s_node_names[$i]}
-    if echo $k8s_node_hostname|grep -q "master"; then
-        continue
-    fi
     scp -r $cert_dir/ca.pem $k8s_node_username@$k8s_node_hostname:$trusted > /dev/null 2>&1
     scp -r $cert_dir $k8s_node_username@$k8s_node_hostname:/ > /dev/null 2>&1
 done

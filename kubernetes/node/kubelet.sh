@@ -8,27 +8,17 @@ command_exists() {
     command -v "$@" > /dev/null 2>&1
 }
 
+
 export PATH=$PATH:$basepath/tools
+json=$basepath/config/k8s.json
+cert_dir=`jq -r '.cert.dir' $json`
+dnsport=`jq -r '.k8s.dnsport' $json`
+domain=`jq -r '.k8s.domain' $json`
+cfg=`jq -r '.k8s.cfg' $json`
+k8s_master_ip=`jq -r '.k8s.nodes[]| select(.type == "master")|.ip' $json` 
 
-dnsport=`cat $basepath/config/k8s.json |jq '.k8s.dnsport'|sed 's/\"//g'`
-domain=`cat $basepath/config/k8s.json |jq '.k8s.domain'|sed 's/\"//g'`
-
-k8s_node_names=`cat $basepath/config/k8s.json |jq '.k8s.nodes[].name'|sed 's/\"//g'`
-k8s_node_ips=`cat $basepath/config/k8s.json |jq '.k8s.nodes[].ip'|sed 's/\"//g'`
-
-arr_k8s_node_names=($(echo $k8s_node_names))
-arr_k8s_node_ips=($(echo $k8s_node_ips))
-
-for ((i=0;i<${#arr_k8s_node_names[@]};i++));do
-    k8s_node_hostname=${arr_k8s_node_names[$i]}
-    if echo $k8s_node_hostname|grep -q "master"; then
-        k8s_master=${arr_k8s_node_ips[$i]}
-    fi
-done
-
-cert_dir=`cat $basepath/config/k8s.json |jq '.cert.dir'|sed 's/\"//g'`
 node_ip=`hostname -i`
-dns=$k8s_master":"$dnsport
+dns=$k8s_master_ip":"$dnsport
 
 # Create kubelet.conf, kubelet.service
 name=kubelet
@@ -37,7 +27,6 @@ data=/var/log/k8s/kubelet/
 ca=$cert_dir/ca.pem
 cert=$cert_dir/client.pem
 certkey=$cert_dir/client-key.pem
-cfg=/etc/kubernetes/kubecfg
 conf=/etc/kubernetes/kubelet.conf
 service=/usr/lib/systemd/system/kubelet.service
 
