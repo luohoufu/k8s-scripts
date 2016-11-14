@@ -23,6 +23,7 @@ fi
 
 export PATH=$PATH:$basepath/tools
 json=$basepath/config/k8s.json
+cert_dir=`jq -r '.cert.dir' $json`
 registry_ip=`jq -r '.docker.registry.ip' $json`
 registry_port=`jq -r '.docker.registry.port' $json`
 registry_url=$registry_ip":"$registry_port
@@ -32,6 +33,7 @@ yaml=$basepath/kubernetes/add-on/dashboard/kubernetes-heapster.yaml
 
 # setting apiserver ip address
 sed -i "s/registry_url/$registry_url/g" $yaml
+sed -i "s/cert_dir/$cert_dir/g" $yaml
 
 if [ $(kubectl get po --namespace=kube-system| grep $name |wc -l) -eq 0 ]; then
     kubectl create -f $yaml

@@ -42,7 +42,7 @@ spec:
       volumes:
       - name: ssl-certs
         hostPath:
-          path: /ssl            
+          path: cert_dir            
 ---
 kind: Service
 apiVersion: v1
