@@ -30,7 +30,7 @@ registry_url=$registry_ip":"$registry_port
 yaml=$basepath/kubernetes/add-on/nginx/nginx.yaml
 
 # setting apiserver ip address
-sed -i "s/registy_url/$registry_url/" $yaml
+sed -i "s/registry_url/$registry_url/g" $yaml
 
 # you need docker pull images manual
 

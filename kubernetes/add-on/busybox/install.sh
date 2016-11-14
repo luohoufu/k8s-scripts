@@ -31,7 +31,7 @@ name=busybox
 yaml=$basepath/kubernetes/add-on/busybox/busybox.yaml
 
 # setting apiserver ip address
-sed -i "s/registy_url/$registry_url/" $yaml
+sed -i "s/registry_url/$registry_url/g" $yaml
 
 # you need docker pull images manual
 
