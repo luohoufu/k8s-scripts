@@ -16,7 +16,7 @@ fi
 # check config
 bash $basepath/os/check.sh
 
-echo "System init maybe take half hour,You can have a coffee now!"
+echo "System init maybe take an half hour,You can have a coffee now!"
 
 # execute shell file
 for s in repo tools selinux hostname hosts iface ntpd kernel vim fix; do
