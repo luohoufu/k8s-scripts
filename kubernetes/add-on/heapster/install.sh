@@ -33,7 +33,7 @@ yaml=$basepath/kubernetes/add-on/dashboard/kubernetes-heapster.yaml
 
 # setting apiserver ip address
 sed -i "s/registry_url/$registry_url/g" $yaml
-sed -i "s/cert_dir/$cert_dir/g" $yaml
+sed -i "s#cert_dir#$cert_dir#g" $yaml
 
 if [ $(kubectl get po --namespace=kube-system| grep $name |wc -l) -eq 0 ]; then
     kubectl create -f $yaml

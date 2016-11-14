@@ -32,13 +32,13 @@ spec:
             memory: 50Mi
         env:
         - name: KUBECONFIG
-          value: kb_cfg
+          value: k8s_cfg
         ports:
         - containerPort: 9090
           protocol: TCP
         args:
         -  --apiserver-host=https://127.0.0.1:6443
-        -  --kubeconfig=kb_cfg
+        -  --kubeconfig=k8s_cfg
         livenessProbe:
           httpGet:
             path: /
