@@ -37,12 +37,12 @@ echo "------------------------------------[ip a show eth0]----------------------
 echo `ip a show eth0`
 echo 
 echo
-echo "------------------------------------[ps -ef|grep iptables]------------------------------------"
-echo `ps -ef|grep iptables`
+echo "------------------------------------[ps -ef|grep iptables|grep -v grep]------------------------------------"
+echo `ps -ef|grep iptables|grep -v grep`
 echo 
 echo
-echo "------------------------------------[ps -ef|grep firewalld]------------------------------------"
-echo `ps -ef|grep firewalld`
+echo "------------------------------------[ps -ef|grep firewalld|grep -v grep]------------------------------------"
+echo `ps -ef|grep firewalld|grep -v grep`
 echo
 echo
 echo "------------------------------------[sestatus -v]------------------------------------"
