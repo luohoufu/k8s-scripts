@@ -16,6 +16,7 @@ if ! grep -q "master" /etc/hostname ; then
     exit 1
 fi
 
+rsa_path=/root/.ssh/id_rsa
 host_path=/root/.ssh/known_hosts
 check_path=/tmp/sync
 exe_dir=/usr/bin
@@ -29,7 +30,9 @@ if [ -f $check_path ]; then
 fi
 
 echo "sync execute files to all nodes,please wait......"
-
+if [ ! -f $rsa_path ]; then
+    ssh-keygen -q -t rsa -N "" -f $rsa_path
+fi
 #ssh with all nodes
 export PATH=$PATH:$basepath/tools
 json=$basepath/config/k8s.json
