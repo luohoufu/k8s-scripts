@@ -48,6 +48,8 @@ k8s_node_names=(`jq -r '.k8s.nodes[].name' $json`)
 
 for ((i=0;i<${#k8s_node_names[@]};i++));do
     k8s_node_hostname=${k8s_node_names[$i]}
+
+    #registry file sync
     if echo $k8s_node_hostname|grep -q "master"; then
         if [ -f $host_path ]; then
             if ! grep -wq "$k8s_registry_hostname" $host_path; then
@@ -62,8 +64,16 @@ for ((i=0;i<${#k8s_node_names[@]};i++));do
                 scp -r $k8s_node_username@$k8s_registry_hostname:$exe_dir/$f $exe_dir > /dev/null 2>&1
             fi
          done
-         
         continue
+    fi
+
+    # nodes file sync
+    if [ -f $host_path ]; then
+        if ! grep -wq "$k8s_node_hostname" $host_path; then
+            expect $basepath/os/expect/expect_ssh.sh $k8s_node_hostname $k8s_node_username $k8s_node_passwd > /dev/null 2>&1
+        fi
+    else
+        expect $basepath/os/expect/expect_ssh.sh $k8s_node_hostname $k8s_node_username $k8s_node_passwd > /dev/null 2>&1
     fi
     
     for f in docker docker-containerd docker-containerd-ctr docker-containerd-shim dockerd docker-proxy docker-runc etcd etcdctl flanneld kubelet kube-proxy mk-docker-opts.sh; do
@@ -71,6 +81,7 @@ for ((i=0;i<${#k8s_node_names[@]};i++));do
             scp -r $exe_dir/$f $k8s_node_username@$k8s_node_hostname:$exe_dir > /dev/null 2>&1
         fi
     done
+
 done
 
 # gernerate check_path
