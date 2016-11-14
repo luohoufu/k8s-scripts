@@ -29,7 +29,7 @@ registry_port=`jq -r '.docker.registry.port' $json`
 registry_url=$registry_ip":"$registry_port
 
 name=heapster
-yaml=$basepath/kubernetes/add-on/dashboard/kubernetes-heapster.yaml
+yaml=$basepath/kubernetes/add-on/heapster/kubernetes-heapster.yaml
 
 tmpdir=$(mktemp -d -t kubernetes.XXXXXX)
 trap 'rm -rf "${tmpdir}"' EXIT
