@@ -10,7 +10,6 @@ command_exists() {
 
 export PATH=$PATH:$basepath/tools
 json=$basepath/config/k8s.json
-dnsport=`jq -r '.k8s.dnsport' $json`
 domain=`jq -r '.k8s.domain' $json`
 cfg=`jq -r '.k8s.cfg' $json`
 
@@ -28,11 +27,6 @@ if ! command_exists ${exefile##*/}; then
      exit 1;
 fi
 
-# check user
-if ! grep -q $user /etc/passwd; then
-    useradd -c "${name:0:4} user"  -d ${data%/*/*} -M -r -s /sbin/nologin $user
-fi
-
 # check confdir
 if [ ! -d "${conf%/*}" ]; then
      mkdir -p ${conf%/*}
@@ -41,9 +35,6 @@ fi
 # check workdir
 if [ ! -d "$data" ]; then
     mkdir -p $data
-    for p in $data $exefile ${conf%/*}; do
-        chown -R $user:$user $p
-    done
 fi
 
 # config file
@@ -58,7 +49,7 @@ KUBE_LOGDIR="--log_dir=${data}"
 KUBE_LOG_LEVEL="--v=4"
 
 # --dns-port=: port on which to serve DNS requests. (default 53)
-KUBE_DNS_PORT="--dns-port=${dnsport}"
+KUBE_DNS_PORT="--dns-port=53"
 
 # --domain="": domain under which to create names (default "cluster.local.")
 KUBE_DOMAIN="--domain=${domain}"
@@ -86,7 +77,6 @@ After=network.target
 After=kube-apiserver.service
 
 [Service]
-User=${user}
 EnvironmentFile=-${conf}
 ExecStart=/usr/bin/kube-dns ${KUBE_DNS_OPTS}
 Restart=on-failure
