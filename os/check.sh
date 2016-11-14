@@ -43,7 +43,6 @@ fi
 export PATH=$PATH:$basepath/tools
 json=$basepath/config/k8s.json
 cert_dir=`jq -r '.cert.dir' $json`
-
 k8s_node_username=`jq -r '.host.uname' $json`
 k8s_node_passwd=`jq -r '.host.passwd' $json`
 k8s_node_names=(`jq -r '.k8s.nodes[].name' $json`)
