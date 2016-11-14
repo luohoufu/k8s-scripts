@@ -21,7 +21,7 @@ fi
 # check config
 bash $basepath/os/check.sh
 
-# execute shell file
+# execute shell file and check os information
 for s in ssh ssl os; do
     bash $basepath/os/$s.sh
 done
