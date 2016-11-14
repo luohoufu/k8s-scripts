@@ -11,7 +11,7 @@ command_exists() {
 export PATH=$PATH:$basepath/tools
 json=$basepath/config/k8s.json
 data=`jq -r '.docker.registry.data' $json`
-fs_driver=`jq -r '.docker.registry.fs_driver' $json`
+fs_driver=`jq -r '.docker.registry.fsdriver' $json`
 
 # Create docker.conf, docker.service
 user=docker

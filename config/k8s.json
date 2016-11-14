@@ -68,10 +68,6 @@
             {
                 "name": "etcd2",
                 "ip": "10.37.116.29"
-            },
-            {
-                "name": "etcd3",
-                "ip": "10.37.116.18"
             }
         ]
     },
@@ -108,7 +104,7 @@
                 "type": "node"
             }
         ],
-        "cfg":"/etc/kubernetes/kubecfg",
+        "cfg": "/etc/kubernetes/kubecfg",
         "iprange": "172.16.0.0/16",
         "dnsport": "6553",
         "domain": "cluster.dev"
