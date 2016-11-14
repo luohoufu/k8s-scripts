@@ -73,17 +73,17 @@ for ((i=0;i<${#k8s_node_names[@]};i++));do
         expect $basepath/os/expect/expect_ssh.sh $k8s_node_hostname $k8s_node_username $k8s_node_passwd > /dev/null 2>&1
     fi
 
+    #
+    # WARNNING,please check you registy ca.pem path,i use /etc/share/ca.pem 
+    #
+    if [ ! -f $trusted ];then
+        scp -r /etc/share/ca.pem $k8s_node_username@$k8s_node_hostname:$trusted > /dev/null 2>&1
+    fi
+
     for f in docker docker-containerd docker-containerd-ctr docker-containerd-shim dockerd docker-proxy docker-runc etcd etcdctl flanneld kubelet kube-proxy mk-docker-opts.sh; do
         if [ -f $exe_dir/$f ];then
             scp -r $exe_dir/$f $k8s_node_username@$k8s_node_hostname:$exe_dir > /dev/null 2>&1
         fi
-
-        #
-        # WARNNING,please check you registy ca.pem path,i use /etc/share/ca.pem 
-        #
-        if [ ! -f $trusted ];then
-            scp -r /etc/share/ca.pem $k8s_node_username@$k8s_node_hostname:$trusted > /dev/null 2>&1
-         fi
     done
 
 done
