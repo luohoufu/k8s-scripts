@@ -20,7 +20,7 @@ spec:
     spec:
       containers:
       - name: kubernetes-dashboard
-        image: registry_url/kubernetes-dashboard-amd64:v1.4.1
+        image: registry_url/kubernetes-dashboard-amd64:v1.4.2
         imagePullPolicy: IfNotPresent
         resources:
           # keep request = limit to keep this container in guaranteed class

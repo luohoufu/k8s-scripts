@@ -16,9 +16,12 @@ dnsport=`jq -r '.k8s.dnsport' $json`
 domain=`jq -r '.k8s.domain' $json`
 cfg=`jq -r '.k8s.cfg' $json`
 k8s_master_ip=`jq -r '.k8s.nodes[]| select(.type == "master")|.ip' $json` 
+registry_ip=`jq -r '.docker.registry.ip' $json`
+registry_port=`jq -r '.docker.registry.port' $json`
 
 node_ip=`hostname -i`
 dns=$k8s_master_ip":"$dnsport
+registry_url=$registry_ip":"$registry_port
 
 # Create kubelet.conf, kubelet.service
 name=kubelet
