@@ -12,7 +12,7 @@ fi
 export PATH=$PATH:$basepath/tools
 json=$basepath/config/k8s.json
 host_name=`hostname`
-node_ip=`jq -r ".k8s.nodes[]| select(.ip == \"$host_name\")|.name" $json`
+node_ip=`jq -r ".k8s.nodes[]| select(.name == \"$host_name\")|.name" $json`
 
 echo "setting iface,please wait......"
 
