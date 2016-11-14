@@ -106,7 +106,7 @@
         ],
         "cfg": "/etc/kubernetes/kubecfg",
         "iprange": "172.16.0.0/16",
-        "dns":"10.37.116.13",
+        "dns": "10.37.116.13",
         "domain": "cluster.dev"
     }
 }
