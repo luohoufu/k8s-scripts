@@ -43,7 +43,7 @@ if [ ! -f $cert_dir/ca.pem ]; then
     echo -ne `echo $ca|jq ".cert"|sed 's/\"//g'` > $cert_dir/ca.pem
     echo -ne `echo $ca|jq ".key"|sed 's/\"//g'` > $cert_dir/ca-key.pem
     echo -ne `echo $ca|jq ".csr"|sed 's/\"//g'` > $cert_dir/ca.csr
-    #CAs trusted 
+    #CA trusted 
     scp -r $cert_dir/ca.pem $trusted    
 fi
 
@@ -59,7 +59,8 @@ done
 # sync ssl file to nodes
 for ((i=0;i<${#k8s_node_names[@]};i++));do
     k8s_node_hostname=${arr_k8s_node_names[$i]}
-    scp -r $cert_dir/ca.pem $k8s_node_username@$k8s_node_hostname:$trusted > /dev/null 2>&1
+    #CA trusted 
+    scp -r $cert_dir/ca.pem $k8s_node_username@$k8s_node_hostname:$trusted > /dev/null 2>&1    
     scp -r $cert_dir $k8s_node_username@$k8s_node_hostname:/ > /dev/null 2>&1
 done
 
