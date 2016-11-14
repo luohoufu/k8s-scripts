@@ -33,6 +33,11 @@ k8s_master_ip=`jq -r '.k8s.nodes[]| select(.type == "master")|.ip' $json`
 name=dashboard
 yaml=$basepath/kubernetes/add-on/dashboard/kubernetes-dashboard.yaml
 
+tmpdir=$(mktemp -d -t kubernetes.XXXXXX)
+trap 'rm -rf "${tmpdir}"' EXIT
+yaml=${tmpdir}/config.yaml
+cat $yaml >> $yaml
+
 # setting apiserver ip address
 sed -i "s/127.0.0.1/$k8s_master_ip/g" $yaml
 sed -i "s/registry_url/$registry_url/g" $yaml
@@ -46,3 +51,4 @@ if [ $(kubectl get po --namespace=kube-system| grep $name |wc -l) -eq 0 ]; then
     kubectl create -f  $yaml
     #kubectl -n kube-system delete deploy,svc kubernetes-dashboard
 fi
+exit

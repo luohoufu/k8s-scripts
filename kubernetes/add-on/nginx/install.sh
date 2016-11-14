@@ -27,7 +27,13 @@ registry_ip=`jq -r '.docker.registry.ip' $json`
 registry_port=`jq -r '.docker.registry.port' $json`
 registry_url=$registry_ip":"$registry_port
 
+name=nginx
 yaml=$basepath/kubernetes/add-on/nginx/nginx.yaml
+
+tmpdir=$(mktemp -d -t kubernetes.XXXXXX)
+trap 'rm -rf "${tmpdir}"' EXIT
+yaml=${tmpdir}/config.yaml
+cat $yaml >> $yaml
 
 # setting apiserver ip address
 sed -i "s/registry_url/$registry_url/g" $yaml
@@ -35,7 +41,7 @@ sed -i "s/registry_url/$registry_url/g" $yaml
 # you need docker pull images manual
 
 # check manual with kubectl get rc,svc,po --namespace=kube-system
-if [ $(kubectl get po | grep nginx |wc -l) -eq 0 ]; then
+if [ $(kubectl get po | grep $name |wc -l) -eq 0 ]; then
     kubectl create -f  $basepath/kubernetes/add-on/nginx/nginx.yaml
     #kubectl delete deploy,svc k8s-nginx
 fi

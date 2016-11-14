@@ -31,6 +31,11 @@ registry_url=$registry_ip":"$registry_port
 name=heapster
 yaml=$basepath/kubernetes/add-on/dashboard/kubernetes-heapster.yaml
 
+tmpdir=$(mktemp -d -t kubernetes.XXXXXX)
+trap 'rm -rf "${tmpdir}"' EXIT
+yaml=${tmpdir}/config.yaml
+cat $yaml >> $yaml
+
 # setting apiserver ip address
 sed -i "s/registry_url/$registry_url/g" $yaml
 sed -i "s#cert_dir#$cert_dir#g" $yaml
