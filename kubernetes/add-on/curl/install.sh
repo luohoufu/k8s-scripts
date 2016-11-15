@@ -47,4 +47,4 @@ fi
 
 # you can use for test
 # kubectl exec -i -t curl sh 
-# curl https://kubernetes.default/api/v1/nodes?resourceVersion=0
+# curl -k https://kubernetes.default/api/v1/nodes?resourceVersion=0

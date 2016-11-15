@@ -57,6 +57,11 @@ echo "------------------------------------[ls $cert_dir]------------------------
 echo `ls $cert_dir`
 echo
 echo
+echo "------------------------------------[ulimit -u]------------------------------------"
+echo `ulimit -u`
+echo
+echo
+
 
  # remove unuse linux kernel 
 if [[ $(uname -r |cut -c1) -eq 4 && $(rpm -qa | grep kernel|grep -v "4.8"|wc -l) -gt 0 ]]; then

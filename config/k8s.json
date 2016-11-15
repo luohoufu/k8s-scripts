@@ -108,5 +108,9 @@
         "iprange": "172.16.0.0/16",
         "dns": "10.37.116.13",
         "domain": "cluster.dev"
+    },
+    "proxy": {
+        "ver": "1.11.2.1",
+        "dest": "/usr/local/openresty"
     }
 }
