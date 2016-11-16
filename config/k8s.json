@@ -111,6 +111,6 @@
     },
     "proxy": {
         "ver": "1.11.2.1",
-        "dest": "/usr/local/openresty"
+        "opdir": "/usr/local/openresty"
     }
 }
